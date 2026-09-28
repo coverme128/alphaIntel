@@ -128,3 +128,63 @@ test("state survives restart and tampered audit event is rejected", () => {
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("personal API preserves empty manual book, idempotent flows, and exports personal data without demo capital", async () => {
+  const server = createApp(new Service(new Store(null))).listen(0, "127.0.0.1");
+  await new Promise<void>((r) => server.once("listening", r));
+  const base = `http://127.0.0.1:${(server.address() as any).port}`;
+  const send = (route: string, body: any) =>
+    fetch(base + route, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Alpha-Client": "owner-ui",
+      },
+      body: JSON.stringify(body),
+    });
+  try {
+    const empty = await (
+      await fetch(base + "/api/personal?mode=MANUAL")
+    ).json();
+    assert.equal(empty.equityUsd, 0);
+    const flow = {
+      requestId: "personal-http-01",
+      mode: "MANUAL",
+      venue: "OKX",
+      type: "DEPOSIT",
+      amountUsd: 1234,
+    };
+    assert.equal((await send("/api/personal/flows", flow)).status, 200);
+    assert.equal((await send("/api/personal/flows", flow)).status, 200);
+    const d = await (await fetch(base + "/api/personal?mode=MANUAL")).json();
+    assert.equal(d.cashUsd, 1234);
+    assert.equal(d.entries.length, 1);
+    const r = await fetch(base + "/api/export?workspace=personal");
+    assert.equal(r.status, 200);
+    const e = await r.json();
+    assert.equal(e.metadata.source, "PERSONAL_BOOKS_AND_PUBLIC_MARKET");
+    assert.equal(
+      e.portfolio.books.find((b: any) => b.mode === "MANUAL").cashUsd,
+      1234,
+    );
+    assert.equal(
+      e.portfolio.books.find((b: any) => b.mode === "PAPER").cashUsd,
+      0,
+    );
+    assert.equal(e.positions.length, 0);
+    assert.equal(e.opportunities.length, 0);
+    assert.equal(e.eventFacts.length, 1);
+    assert.ok(e.calculationFacts.length > 0);
+    assert.equal(
+      (
+        await send("/api/personal/open", {
+          requestId: "personal-live-01",
+          mode: "AUTO",
+        })
+      ).status,
+      400,
+    );
+  } finally {
+    await new Promise<void>((r) => server.close(() => r()));
+  }
+});

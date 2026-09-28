@@ -118,6 +118,12 @@ export class PublicMarketManager {
     }, 750);
     this.recalc.unref();
   }
+  observation() {
+    return structuredClone({
+      snapshots: this.state.snapshots,
+      valuations: this.state.valuations,
+    });
+  }
   summary() {
     const now = Date.now();
     return structuredClone({

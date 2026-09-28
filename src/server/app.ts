@@ -1,14 +1,17 @@
 import express from "express";
+import { PersonalService } from "../personal/service";
+import type { BookMode } from "../personal/types";
 import { Service, DomainError } from "./service";
 import { fetchBook } from "./market";
 import { PublicMarketManager } from "../market/manager";
 import { VENUES, type Venue } from "../market/types";
 import { accountReadiness } from "../market/private-contracts";
-import { evaluateYieldTerms } from "../market/engine";
+import { digest, evaluateYieldTerms } from "../market/engine";
 import { validateExport } from "./contracts";
 export function createApp(
   service: Service,
   publicMarket = new PublicMarketManager(null),
+  personal = new PersonalService(null, publicMarket.policy),
 ) {
   const app = express();
   app.disable("x-powered-by");
@@ -59,14 +62,24 @@ export function createApp(
     service.refreshScenario();
     res.json(service.dashboard());
   });
-  app.get("/api/export", (_, res) => {
+  app.get("/api/export", (req, res) => {
     res.setHeader(
       "Content-Disposition",
       `attachment; filename="alpha-capital-decision-analysis-${Date.now()}.json"`,
     );
-    const payload = service.export();
+    const legacy = service.export();
+    const payload = {
+      ...legacy,
+      metadata: {
+        ...legacy.metadata,
+        personalBooks: personal.export(),
+        personalPerformance: ["PAPER", "MANUAL"].map((mode) =>
+          personal.dashboard(mode as BookMode, publicMarket.observation()),
+        ),
+      },
+    };
     const market = publicMarket.exportSnapshot();
-    const combined = market.snapshots.length
+    let combined: any = market.snapshots.length
       ? {
           ...payload,
           metadata: {
@@ -91,6 +104,106 @@ export function createApp(
           ],
         }
       : payload;
+    if (req.query.workspace === "personal") {
+      const evaluatedAt = Date.now(),
+        observation = publicMarket.observation(),
+        books = personal.export();
+      const dashboards = (["PAPER", "MANUAL"] as const).map((mode) =>
+        personal.dashboard(mode, observation, evaluatedAt),
+      );
+      const inputHash = digest({ books, observation, evaluatedAt }),
+        configHash = digest(publicMarket.policy);
+      const facts = dashboards.flatMap((d) =>
+        Object.entries(d)
+          .filter(([_, v]) => typeof v === "number")
+          .map(([metric, value]) => ({
+            factId: `personal:${inputHash}:${d.mode}:${metric}`,
+            metric,
+            value,
+            unit: "USD",
+            quality: "DERIVED",
+            computedAt: new Date(evaluatedAt).toISOString(),
+            formulaId: "PERSONAL_LEDGER",
+            formulaVersion: "1.0.0",
+            inputSnapshotHash: inputHash,
+            configHash,
+            assumptions: [
+              d.performanceSource,
+              d.cashValuation,
+              "Unrealized PnL excludes future closing fees; missing funding evidence remains incomplete",
+            ],
+          })),
+      );
+      combined = {
+        ...combined,
+        metadata: {
+          ...combined.metadata,
+          source: "PERSONAL_BOOKS_AND_PUBLIC_MARKET",
+          personalBooks: books,
+          personalPerformance: dashboards,
+          personalValuationInputs: observation,
+          personalEvaluatedAt: evaluatedAt,
+          personalInputHash: inputHash,
+          snapshotId: `personal:${inputHash}`,
+          numericFactReferences: { personal: facts.map((f) => f.factId) },
+          windowStart: new Date(
+            Math.min(books.createdAt, ...books.entries.map((e) => e.at)),
+          ).toISOString(),
+        },
+        portfolio: {
+          books: dashboards.map((d) => ({
+            mode: d.mode,
+            equityUsd: d.equityUsd,
+            cashUsd: d.cashUsd,
+            capitalUsd: d.capitalUsd,
+            netContributionsUsd: d.netContributionsUsd,
+          })),
+        },
+        capitalActions: dashboards.flatMap((d) =>
+          d.positions
+            .filter((p) => !p.closedAt)
+            .flatMap((p) =>
+              p.alerts.map((code) => ({
+                mode: d.mode,
+                positionId: p.id,
+                action: "REVIEW",
+                reasonCode: code,
+                automaticExecution: false,
+              })),
+            ),
+        ),
+        positions: dashboards.flatMap((d) => d.positions),
+        opportunities: market.candidates,
+        performance: {
+          books: dashboards.map(({ positions, entries, accounts, ...d }) => d),
+        },
+        eventFacts: books.entries,
+        riskFacts: [
+          {
+            liveExecutionEnabled: false,
+            manualBookExchangeReconciled: false,
+            valuation: "USD_REFERENCE",
+            fundingMarkToleranceMs: 120000,
+          },
+        ],
+        calculationFacts: [...market.facts, ...facts],
+        calculationTraces: [
+          ...market.traces,
+          ...facts.map((f) => ({
+            traceId: `trace:${f.factId}`,
+            subjectId: "PERSONAL_LEDGER",
+            formulaId: f.formulaId,
+            formulaVersion: f.formulaVersion,
+            inputSnapshotHash: inputHash,
+            outputFactId: f.factId,
+            computedAt: f.computedAt,
+            configHash,
+            expression: f.metric,
+          })),
+        ],
+        productValue: { status: "EVIDENCE_INSUFFICIENT" },
+      };
+    }
     if (!validateExport(combined)) throw new Error("INVALID_EXPORT_SCHEMA");
     res.json(combined);
   });
@@ -164,6 +277,46 @@ export function createApp(
     } catch (e) {
       res.status(400).json({ error: (e as Error).message });
     }
+  });
+  app.get("/api/personal", (req, res) =>
+    res.json(
+      personal.dashboard(
+        (req.query.mode ?? "PAPER") as BookMode,
+        publicMarket.observation(),
+      ),
+    ),
+  );
+  app.post("/api/personal/flows", (req, res) =>
+    res.json(personal.flow(req.body)),
+  );
+  app.post("/api/personal/fees", (req, res) =>
+    res.json(personal.setFee(req.body)),
+  );
+  app.post("/api/personal/open", (req, res) =>
+    res
+      .status(201)
+      .json(
+        personal.open(
+          req.body,
+          publicMarket.observation(),
+          publicMarket.summary().candidates,
+        ),
+      ),
+  );
+  app.post("/api/personal/positions/:id/close", (req, res) =>
+    res.json(
+      personal.close(req.params.id, req.body, publicMarket.observation()),
+    ),
+  );
+  app.post("/api/personal/positions/:id/cashflows", (req, res) =>
+    res.json(personal.cashflow(req.params.id, req.body)),
+  );
+  app.post("/api/personal/positions/:id/risk", (req, res) =>
+    res.json(personal.risk(req.params.id, req.body)),
+  );
+  app.post("/api/personal/sync", (_, res) => {
+    personal.sync(publicMarket.observation());
+    res.json({ ok: true });
   });
   app.get("/api/connections", (_, res) => res.json(accountReadiness()));
   app.all("/api/private/:venue/:operation", (_, res) =>

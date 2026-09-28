@@ -1,4 +1,5 @@
 import express from "express";
+import { PersonalService } from "../personal/service";
 import path from "node:path";
 import { createApp } from "./app";
 import { Store } from "./store";
@@ -14,7 +15,19 @@ const publicMarket = new PublicMarketManager(
   undefined,
   (process.env.ALPHA_ASSETS ?? "BTC,ETH").split(",").map((a) => a.trim()),
 );
-const app = createApp(service, publicMarket);
+const personal = new PersonalService(
+  path.resolve(process.env.ALPHA_DATA_DIR ?? ".data", "personal-books.json"),
+  publicMarket.policy,
+);
+const personalTimer = setInterval(() => {
+  try {
+    personal.sync(publicMarket.observation());
+  } catch (e) {
+    console.error("Personal settlement:", (e as Error).message);
+  }
+}, 15000);
+personalTimer.unref();
+const app = createApp(service, publicMarket, personal);
 if (process.env.ALPHA_PUBLIC_AUTOSTART === "true")
   void publicMarket
     .start()

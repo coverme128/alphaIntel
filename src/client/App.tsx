@@ -1,3 +1,4 @@
+import PersonalWorkspace from "./PersonalWorkspace";
 import React, { useState, useEffect, useRef } from "react";
 import {
   Activity,
@@ -196,6 +197,7 @@ function Modal({
   );
 }
 export default function App() {
+  const [personalView, setPersonalView] = useState(true);
   const [data, setData] = useState<Dashboard | null>(null),
     [page, setPage] = useState<Page>(() =>
       nav.some((n) => n.id === location.hash.slice(1))
@@ -272,7 +274,9 @@ export default function App() {
   const exportData = async () => {
     setBusy(true);
     try {
-      const response = await fetch("/api/export");
+      const response = await fetch(
+        personalView ? "/api/export?workspace=personal" : "/api/export",
+      );
       if (!response.ok) throw new Error("导出失败");
       const blob = await response.blob(),
         url = URL.createObjectURL(blob),
@@ -427,13 +431,15 @@ export default function App() {
           <div className="mode-panel">
             <FlaskConical size={17} />
             <div>
-              <b>模拟运行</b>
-              <p>安全探索，验证每个决策</p>
+              <b>{personalView ? "个人使用" : "示例演练"}</b>
+              <p>研究、记账与持仓复盘</p>
             </div>
             <span className="status-dot" />
           </div>
           <button className="settings-button" onClick={() => setSettings(true)}>
-            <Settings2 size={18} /> 高级与设置 <ChevronRight size={15} />
+            <Settings2 size={18} />{" "}
+            {personalView ? "示例环境设置" : "高级与设置"}{" "}
+            <ChevronRight size={15} />
           </button>
           <div className="user">
             <span className="user-avatar">G</span>
@@ -469,7 +475,7 @@ export default function App() {
             <button
               className="icon-button notification"
               aria-label="查看通知"
-              onClick={() => setAlerts(true)}
+              onClick={() => (personalView ? go("Today") : setAlerts(true))}
             >
               <Bell size={18} />
               {data.killSwitch && <i />}
@@ -504,587 +510,616 @@ export default function App() {
                   : page === "Opportunities"
                     ? "统一比较净收益、容量与证据成熟度，先理解，再行动。"
                     : page === "Positions"
-                      ? "查看模拟持仓、退出条件与执行记录。"
+                      ? personalView
+                        ? "查看个人持仓、退出提示与记账记录。"
+                        : "查看模拟持仓、退出条件与执行记录。"
                       : page === "Portfolio"
                         ? "先保留流动性，再在约束内配置资金。"
                         : "区分预期、已实现结果与经过验证的 Alpha。"}
               </p>
             </div>
+            <button
+              className="legacy-switch"
+              onClick={() => setPersonalView(!personalView)}
+            >
+              {personalView ? "查看旧版示例演练" : "返回个人工作台"}
+            </button>
             <span className="environment">
               <FlaskConical size={14} />{" "}
-              {page === "Opportunities" && marketView === "PUBLIC"
-                ? "公开市场 · 只读研究"
-                : "PAPER 模拟环境"}
+              {personalView
+                ? "个人工作台 · 无真实下单"
+                : page === "Opportunities" && marketView === "PUBLIC"
+                  ? "公开市场 · 只读研究"
+                  : "PAPER 模拟环境"}
             </span>
           </div>
-          {!(page === "Opportunities" && marketView === "PUBLIC") && (
+          {personalView ? (
+            <PersonalWorkspace page={page} />
+          ) : (
             <>
-              <div className="scenario-banner">
-                <span>
-                  <BookOpen size={16} />
-                  <b>示例场景</b>{" "}
-                  当前使用规格包中的固定测试数据与模拟资金，非实时投资机会。
-                </span>
-                <button
-                  disabled={busy}
-                  onClick={() =>
-                    mutate(
-                      "/api/scenario/refresh",
-                      {},
-                      "已载入新的模拟场景；已有持仓保留",
-                    )
-                  }
-                >
-                  <RefreshCw size={13} /> 刷新场景
-                </button>
-              </div>
-            </>
-          )}
-          {error && (
-            <div className="error-banner" role="alert">
-              <span>{error}</span>
-              <button
-                className="icon-button"
-                aria-label="关闭错误"
-                onClick={() => setError("")}
-              >
-                <X size={16} />
-              </button>
-            </div>
-          )}
-          {data.killSwitch && (
-            <div className="kill-banner">
-              <Pause size={16} /> 新建仓已暂停。现有持仓仍可正常退出。
-              <button onClick={() => setSettings(true)}>
-                管理状态 <ArrowRight size={14} />
-              </button>
-            </div>
-          )}
-          {(page === "Today" || page === "Portfolio") && (
-            <div className="metrics">
-              <div className="metric featured">
-                <span>
-                  模拟总权益 <CircleHelp size={13} />
-                </span>
-                <strong>{money(p.equityUsd)}</strong>
-                <small>
-                  <span className="status-dot" /> USD 计价 · 本地模拟账本
-                </small>
-              </div>
-              <div className="metric">
-                <span>已配置资金</span>
-                <strong>{money(p.deployedUsd)}</strong>
-                <small>
-                  {opened.length} 个活跃持仓 <i /> 占总权益{" "}
-                  {pct((p.deployedUsd / p.equityUsd) * 100)}
-                </small>
-              </div>
-              <div className="metric">
-                <span>
-                  可用资金 <span className="tiny-tag">保留 15% 储备后</span>
-                </span>
-                <strong>{money(p.availableUsd)}</strong>
-                <small>现金储备 {money(p.reserveUsd, 0)}</small>
-              </div>
-              <div className="metric">
-                <span>本月已平仓模拟净损益</span>
-                <strong
-                  className={p.monthlyRealizedPnlUsd < 0 ? "negative" : ""}
-                >
-                  {signed(p.monthlyRealizedPnlUsd)}
-                </strong>
-                <small>
-                  真实 Alpha <Tag>尚未验证</Tag>
-                </small>
-              </div>
-            </div>
-          )}
-          {page === "Today" && (
-            <>
-              <section>
-                <div className="section-heading">
-                  <div>
-                    <h2>
-                      今日行动 <span>{data.actions.length}</span>
-                    </h2>
-                    <p>少一些信息噪声，多一些有依据的行动。</p>
-                  </div>
-                  <button
-                    className="text-button"
-                    onClick={() => go("Opportunities")}
-                  >
-                    查看全部机会 <ArrowRight size={15} />
-                  </button>
-                </div>
-                <div className="actions-grid">
-                  {data.actions.map(actionCard)}
-                </div>
-              </section>
-              <div className="overview-grid">
-                <section className="panel allocation-panel">
-                  <div className="panel-title">
-                    <h2>资金配置</h2>
+              {!(page === "Opportunities" && marketView === "PUBLIC") && (
+                <>
+                  <div className="scenario-banner">
+                    <span>
+                      <BookOpen size={16} />
+                      <b>示例场景</b>{" "}
+                      当前使用规格包中的固定测试数据与模拟资金，非实时投资机会。
+                    </span>
                     <button
-                      className="icon-button"
-                      aria-label="查看资金组合"
-                      onClick={() => go("Portfolio")}
+                      disabled={busy}
+                      onClick={() =>
+                        mutate(
+                          "/api/scenario/refresh",
+                          {},
+                          "已载入新的模拟场景；已有持仓保留",
+                        )
+                      }
                     >
-                      <ArrowUpRight size={18} />
+                      <RefreshCw size={13} /> 刷新场景
                     </button>
                   </div>
-                  <div className="allocation-content">
-                    <div
-                      className="donut"
-                      style={{
-                        background: `conic-gradient(#f28a5c 0 ${(p.deployedUsd / p.equityUsd) * 100}%, #e6eaf0 0 85%, #233a50 0)`,
-                      }}
-                    >
-                      <div>
-                        <span>模拟资金</span>
-                        <strong>{money(p.equityUsd, 0)}</strong>
-                        <small>USD</small>
-                      </div>
-                    </div>
-                    <div className="legend">
-                      <div>
-                        <span>
-                          <i className="orange" />
-                          策略配置
-                        </span>
-                        <b>{money(p.deployedUsd, 0)}</b>
-                      </div>
-                      <div>
-                        <span>
-                          <i className="light" />
-                          待配置现金
-                        </span>
-                        <b>{money(p.availableUsd, 0)}</b>
-                      </div>
-                      <div>
-                        <span>
-                          <i className="navy" />
-                          安全储备
-                        </span>
-                        <b>{money(p.reserveUsd, 0)}</b>
-                      </div>
-                      <p>
-                        <ShieldCheck size={14} /> 先保留流动性，再分配资金。
-                      </p>
-                    </div>
-                  </div>
-                  <div className="panel-bottom">
-                    <span>资金分配：建议模式</span>
-                    <button onClick={() => go("Portfolio")}>
-                      查看分配依据 <ChevronRight size={14} />
-                    </button>
-                  </div>
-                </section>
-                <section className="panel monitor-panel">
-                  <div className="panel-title">
-                    <h2>值得留意</h2>
-                    <Tag tone="green">本地状态</Tag>
-                  </div>
-                  <div className="monitor-item">
-                    <span className="monitor-icon mint">
-                      <ShieldCheck size={18} />
-                    </span>
-                    <div>
-                      <h3>
-                        {data.killSwitch
-                          ? "新建仓已暂停"
-                          : "实盘安全门槛保持关闭"}
-                      </h3>
-                      <p>尚未完成回放、连续模拟与交易所验收。</p>
-                    </div>
-                  </div>
-                  <div className="monitor-item">
-                    <span className="monitor-icon peach">
-                      <Activity size={18} />
-                    </span>
-                    <div>
-                      <h3>
-                        {opened.length
-                          ? `${opened.length} 个模拟持仓等待管理`
-                          : "当前没有需要退出的持仓"}
-                      </h3>
-                      <p>
-                        {opened.length
-                          ? "在持仓页查看成本与主动退出。"
-                          : "完成模拟配置后，持仓将在这里持续展示。"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="monitor-item">
-                    <span className="monitor-icon lavender">
-                      <Sparkles size={18} />
-                    </span>
-                    <div>
-                      <h3>决策不依赖 AI</h3>
-                      <p>所有建议均来自可追溯的规则与计算事实。</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <section className="panel">
-                <div className="panel-title">
-                  <div>
-                    <h2>
-                      机会一览 <small>精选 CARRY & YIELD</small>
-                    </h2>
-                  </div>
-                  <button
-                    className="text-button"
-                    onClick={() => go("Opportunities")}
-                  >
-                    全部机会 <ArrowRight size={15} />
-                  </button>
-                </div>
-                <OpportunityTable
-                  items={data.opportunities.slice(-5)}
-                  onDetail={setDetail}
-                />
-              </section>
-            </>
-          )}
-          {page === "Opportunities" && (
-            <div className="market-source-tabs">
-              <button
-                className={marketView === "PUBLIC" ? "selected" : ""}
-                onClick={() => setMarketView("PUBLIC")}
-              >
-                公开市场 · 实际数据
-              </button>
-              <button
-                className={marketView === "SCENARIO" ? "selected" : ""}
-                onClick={() => setMarketView("SCENARIO")}
-              >
-                模拟场景 · 流程演练
-              </button>
-            </div>
-          )}
-          {page === "Opportunities" && marketView === "PUBLIC" && (
-            <PublicMarket />
-          )}
-          {page === "Opportunities" && marketView === "SCENARIO" && (
-            <section className="panel">
-              <div className="filter-bar">
-                <div className="tabs">
-                  {[
-                    ["ALL", "全部机会"],
-                    ["CARRY", "Carry 策略"],
-                    ["YIELD", "闲置收益"],
-                  ].map(([v, t]) => (
-                    <button
-                      key={v}
-                      className={filter === v ? "selected" : ""}
-                      onClick={() => setFilter(v)}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-                <label className="search">
-                  <Search size={16} />
-                  <input
-                    aria-label="搜索机会"
-                    placeholder="搜索资产或交易所…"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </label>
-              </div>
-              <OpportunityTable
-                items={data.opportunities.filter(
-                  (o) =>
-                    (filter === "ALL" || o.module === filter) &&
-                    `${o.title} ${o.venues.join(" ")}`
-                      .toLowerCase()
-                      .includes(search.toLowerCase()),
-                )}
-                onDetail={setDetail}
-              />
-              <div className="table-note">
-                <CircleHelp size={14} />{" "}
-                净收益对应实际持有期；年化仅供对比。所有策略当前均为 DRAFT /
-                尚未验证。
-              </div>
-            </section>
-          )}
-          {page === "Positions" && (
-            <section className="panel">
-              <div className="filter-bar">
-                <div className="tabs">
-                  <button
-                    className={positionTab === "OPEN" ? "selected" : ""}
-                    onClick={() => setPositionTab("OPEN")}
-                  >
-                    当前持仓 · {opened.length}
-                  </button>
-                  <button
-                    className={positionTab === "CLOSED" ? "selected" : ""}
-                    onClick={() => setPositionTab("CLOSED")}
-                  >
-                    已平仓 · {data.positions.length - opened.length}
-                  </button>
-                </div>
-                <Tag>PAPER 模拟执行</Tag>
-              </div>
-              {data.positions.filter((p) => p.status === positionTab).length ? (
-                <div className="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>持仓</th>
-                        <th>配置资金</th>
-                        <th>预计净收益</th>
-                        <th>已支付模拟入场成本</th>
-                        <th>
-                          {positionTab === "OPEN"
-                            ? "建仓时间"
-                            : "模拟已实现损益"}
-                        </th>
-                        <th />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.positions
-                        .filter((p) => p.status === positionTab)
-                        .map((pos) => (
-                          <tr key={pos.id}>
-                            <td>
-                              <div className="instrument">
-                                <Asset asset={pos.asset} small />
-                                <div>
-                                  <b>{pos.title}</b>
-                                  <small>{pos.venues.join(" · ")}</small>
-                                </div>
-                              </div>
-                            </td>
-                            <td>{money(pos.capitalUsd)}</td>
-                            <td>{signed(pos.expectedPnlUsd)}</td>
-                            <td>{money(pos.entryFeeUsd)}</td>
-                            <td>
-                              {positionTab === "OPEN"
-                                ? new Date(pos.openedAt).toLocaleString("zh-CN")
-                                : signed(pos.realizedPnlUsd ?? 0)}
-                            </td>
-                            <td>
-                              {pos.status === "OPEN" && (
-                                <button
-                                  className="outline compact"
-                                  onClick={() => setClosing(pos)}
-                                >
-                                  退出持仓
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <Empty
-                  title={
-                    positionTab === "OPEN"
-                      ? "资金准备好了，等待你的第一步。"
-                      : "还没有已平仓记录"
-                  }
-                  description={
-                    positionTab === "OPEN"
-                      ? "从今日行动或机会列表开始，模拟一笔有依据的资金配置。"
-                      : "退出模拟持仓后，可在这里复核实际记录的成本与损益。"
-                  }
-                />
+                </>
               )}
-            </section>
-          )}
-          {page === "Portfolio" && (
-            <>
-              <div className="overview-grid">
-                <section className="panel">
-                  <div className="panel-title">
-                    <h2>交易所资金清单</h2>
-                    <Tag>仅规划 · 不转账</Tag>
-                  </div>
-                  <div className="inventory-list">
-                    {p.inventory.map((v, i) => (
-                      <div className="inventory-row" key={v.venue}>
-                        <div className={`venue-logo venue-${i}`}>
-                          {v.venue[0]}
-                        </div>
-                        <div>
-                          <b>{v.venue}</b>
-                          <small>可用 {money(v.readyUsd)}</small>
-                        </div>
-                        <div className="inventory-bar">
-                          <i
-                            style={{
-                              width: `${Math.max(2, (v.allocatedUsd / v.totalUsd) * 100)}%`,
-                            }}
-                          />
-                        </div>
-                        <strong>{money(v.totalUsd, 0)}</strong>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="table-note">
-                    所有余额均为模拟 USD。未连接私有账户，不发起资金转移。
-                  </div>
-                </section>
-                <section className="panel">
-                  <div className="panel-title">
-                    <h2>配置约束</h2>
-                    <ShieldCheck size={18} />
-                  </div>
-                  <div className="policy-list">
-                    {[
-                      ["最低现金储备", "15%"],
-                      ["单机会配置上限", "10%"],
-                      ["策略家族上限", "35%"],
-                      ["单交易所 / 单资产上限", "40%"],
-                      ["结算稳定币上限", "80%"],
-                    ].map(([k, v]) => (
-                      <div key={k}>
-                        <span>{k}</span>
-                        <b>{v}</b>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              </div>
-              <section className="panel">
-                <div className="panel-title">
-                  <div>
-                    <h2>下一步资金建议</h2>
-                    <p>按边际收益与资金占用时间比较，在约束内逐步配置。</p>
-                  </div>
-                  <Tag>ADVISORY</Tag>
+              {error && (
+                <div className="error-banner" role="alert">
+                  <span>{error}</span>
+                  <button
+                    className="icon-button"
+                    aria-label="关闭错误"
+                    onClick={() => setError("")}
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
-                <div className="plan-list">
-                  {data.actions.map((a) => (
-                    <div key={a.displayTitle}>
-                      <span className="plan-arrow">
-                        <ArrowRight size={18} />
-                      </span>
+              )}
+              {data.killSwitch && (
+                <div className="kill-banner">
+                  <Pause size={16} /> 新建仓已暂停。现有持仓仍可正常退出。
+                  <button onClick={() => setSettings(true)}>
+                    管理状态 <ArrowRight size={14} />
+                  </button>
+                </div>
+              )}
+              {(page === "Today" || page === "Portfolio") && (
+                <div className="metrics">
+                  <div className="metric featured">
+                    <span>
+                      模拟总权益 <CircleHelp size={13} />
+                    </span>
+                    <strong>{money(p.equityUsd)}</strong>
+                    <small>
+                      <span className="status-dot" /> USD 计价 · 本地模拟账本
+                    </small>
+                  </div>
+                  <div className="metric">
+                    <span>已配置资金</span>
+                    <strong>{money(p.deployedUsd)}</strong>
+                    <small>
+                      {opened.length} 个活跃持仓 <i /> 占总权益{" "}
+                      {pct((p.deployedUsd / p.equityUsd) * 100)}
+                    </small>
+                  </div>
+                  <div className="metric">
+                    <span>
+                      可用资金 <span className="tiny-tag">保留 15% 储备后</span>
+                    </span>
+                    <strong>{money(p.availableUsd)}</strong>
+                    <small>现金储备 {money(p.reserveUsd, 0)}</small>
+                  </div>
+                  <div className="metric">
+                    <span>本月已平仓模拟净损益</span>
+                    <strong
+                      className={p.monthlyRealizedPnlUsd < 0 ? "negative" : ""}
+                    >
+                      {signed(p.monthlyRealizedPnlUsd)}
+                    </strong>
+                    <small>
+                      真实 Alpha <Tag>尚未验证</Tag>
+                    </small>
+                  </div>
+                </div>
+              )}
+              {page === "Today" && (
+                <>
+                  <section>
+                    <div className="section-heading">
                       <div>
-                        <b>{a.displayTitle}</b>
-                        <small>
-                          {a.actionType === "EXECUTE"
-                            ? "从模拟现金配置 · 需手动确认"
-                            : "维持当前配置"}
-                        </small>
+                        <h2>
+                          今日行动 <span>{data.actions.length}</span>
+                        </h2>
+                        <p>少一些信息噪声，多一些有依据的行动。</p>
                       </div>
-                      <strong>{money(a.capitalUsd, 0)}</strong>
-                      <Tag tone="amber">尚未验证</Tag>
+                      <button
+                        className="text-button"
+                        onClick={() => go("Opportunities")}
+                      >
+                        查看全部机会 <ArrowRight size={15} />
+                      </button>
                     </div>
-                  ))}
-                </div>
-                <div className="table-note">
-                  混合持有期计划预期净损益：{money(p.expectedPlanPnlUsd)}
-                  。这不是相同期限的组合收益率。
-                </div>
-              </section>
-            </>
-          )}
-          {page === "Performance" && (
-            <>
-              <div className="performance-hero">
-                <div>
-                  <span className="eyebrow">ALPHA PROOF</span>
-                  <h2>有收益，还需要有证据。</h2>
-                  <p>
-                    真实价值来自已对账的结果、同窗口基准比较与完整运行成本。
-                  </p>
-                  <Tag tone="amber">证据不足 · UNPROVEN</Tag>
-                </div>
-                <div className="proof-symbol">
-                  <ShieldCheck size={64} strokeWidth={1} />
-                </div>
-              </div>
-              <div className="metrics three">
-                <div className="metric">
-                  <span>累计模拟已记录损益</span>
-                  <strong>{signed(p.realizedPnlUsd)}</strong>
-                  <small>含未平仓入场成本 · 不等于真实收益</small>
-                </div>
-                <div className="metric">
-                  <span>基准调整后超额收益</span>
-                  <strong>—</strong>
-                  <small>尚无同步实盘与基准数据</small>
-                </div>
-                <div className="metric">
-                  <span>实盘证据覆盖</span>
-                  <strong>
-                    0 <em>天</em>
-                  </strong>
-                  <small>价值分类要求至少 90 天合格证据</small>
-                </div>
-              </div>
-              <section className="panel">
-                <div className="panel-title">
-                  <h2>产品价值评估</h2>
-                  <Tag>证据不足</Tag>
-                </div>
-                <div className="value-grid">
-                  {[
-                    ["Alpha 价值", "尚未验证", "等待已实现、已对账的超额收益"],
-                    ["风险降低价值", "证据不足", "等待同步窗口的回撤比较"],
-                    [
-                      "操作效率价值",
-                      "未开始计量",
-                      "需要测量或所有者记录的工时",
-                    ],
-                    ["扩张决策", "尚未评估", "不因预期收益或功能完成而扩张"],
-                  ].map(([t, v, desc]) => (
-                    <div key={t}>
-                      <span>{t}</span>
-                      <h3>{v}</h3>
-                      <p>{desc}</p>
+                    <div className="actions-grid">
+                      {data.actions.map(actionCard)}
                     </div>
-                  ))}
-                </div>
-              </section>
-              <section className="panel">
-                <div className="panel-title">
-                  <h2>模拟执行流水</h2>
-                  <span>{data.events.length} 条事件</span>
-                </div>
-                {data.events.length ? (
-                  <div className="event-list">
-                    {data.events
-                      .slice(-10)
-                      .reverse()
-                      .map((e) => (
-                        <div key={e.id}>
-                          <span className="event-dot" />
+                  </section>
+                  <div className="overview-grid">
+                    <section className="panel allocation-panel">
+                      <div className="panel-title">
+                        <h2>资金配置</h2>
+                        <button
+                          className="icon-button"
+                          aria-label="查看资金组合"
+                          onClick={() => go("Portfolio")}
+                        >
+                          <ArrowUpRight size={18} />
+                        </button>
+                      </div>
+                      <div className="allocation-content">
+                        <div
+                          className="donut"
+                          style={{
+                            background: `conic-gradient(#f28a5c 0 ${(p.deployedUsd / p.equityUsd) * 100}%, #e6eaf0 0 85%, #233a50 0)`,
+                          }}
+                        >
                           <div>
-                            <b>
-                              {{
-                                PAPER_OPEN: "模拟建仓",
-                                PAPER_CLOSE: "模拟退出",
-                                KILL_SWITCH_ON: "暂停新建仓",
-                                KILL_SWITCH_OFF: "恢复新建仓",
-                                SCENARIO_REFRESH: "刷新模拟场景",
-                                INTELLIGENCE_MODE_CHANGED: "切换解释模式",
-                              }[e.type] ?? e.type}
-                            </b>
+                            <span>模拟资金</span>
+                            <strong>{money(p.equityUsd, 0)}</strong>
+                            <small>USD</small>
+                          </div>
+                        </div>
+                        <div className="legend">
+                          <div>
+                            <span>
+                              <i className="orange" />
+                              策略配置
+                            </span>
+                            <b>{money(p.deployedUsd, 0)}</b>
+                          </div>
+                          <div>
+                            <span>
+                              <i className="light" />
+                              待配置现金
+                            </span>
+                            <b>{money(p.availableUsd, 0)}</b>
+                          </div>
+                          <div>
+                            <span>
+                              <i className="navy" />
+                              安全储备
+                            </span>
+                            <b>{money(p.reserveUsd, 0)}</b>
+                          </div>
+                          <p>
+                            <ShieldCheck size={14} /> 先保留流动性，再分配资金。
+                          </p>
+                        </div>
+                      </div>
+                      <div className="panel-bottom">
+                        <span>资金分配：建议模式</span>
+                        <button onClick={() => go("Portfolio")}>
+                          查看分配依据 <ChevronRight size={14} />
+                        </button>
+                      </div>
+                    </section>
+                    <section className="panel monitor-panel">
+                      <div className="panel-title">
+                        <h2>值得留意</h2>
+                        <Tag tone="green">本地状态</Tag>
+                      </div>
+                      <div className="monitor-item">
+                        <span className="monitor-icon mint">
+                          <ShieldCheck size={18} />
+                        </span>
+                        <div>
+                          <h3>
+                            {data.killSwitch
+                              ? "新建仓已暂停"
+                              : "实盘安全门槛保持关闭"}
+                          </h3>
+                          <p>尚未完成回放、连续模拟与交易所验收。</p>
+                        </div>
+                      </div>
+                      <div className="monitor-item">
+                        <span className="monitor-icon peach">
+                          <Activity size={18} />
+                        </span>
+                        <div>
+                          <h3>
+                            {opened.length
+                              ? `${opened.length} 个模拟持仓等待管理`
+                              : "当前没有需要退出的持仓"}
+                          </h3>
+                          <p>
+                            {opened.length
+                              ? "在持仓页查看成本与主动退出。"
+                              : "完成模拟配置后，持仓将在这里持续展示。"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="monitor-item">
+                        <span className="monitor-icon lavender">
+                          <Sparkles size={18} />
+                        </span>
+                        <div>
+                          <h3>决策不依赖 AI</h3>
+                          <p>所有建议均来自可追溯的规则与计算事实。</p>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                  <section className="panel">
+                    <div className="panel-title">
+                      <div>
+                        <h2>
+                          机会一览 <small>精选 CARRY & YIELD</small>
+                        </h2>
+                      </div>
+                      <button
+                        className="text-button"
+                        onClick={() => go("Opportunities")}
+                      >
+                        全部机会 <ArrowRight size={15} />
+                      </button>
+                    </div>
+                    <OpportunityTable
+                      items={data.opportunities.slice(-5)}
+                      onDetail={setDetail}
+                    />
+                  </section>
+                </>
+              )}
+              {page === "Opportunities" && (
+                <div className="market-source-tabs">
+                  <button
+                    className={marketView === "PUBLIC" ? "selected" : ""}
+                    onClick={() => setMarketView("PUBLIC")}
+                  >
+                    公开市场 · 实际数据
+                  </button>
+                  <button
+                    className={marketView === "SCENARIO" ? "selected" : ""}
+                    onClick={() => setMarketView("SCENARIO")}
+                  >
+                    模拟场景 · 流程演练
+                  </button>
+                </div>
+              )}
+              {page === "Opportunities" && marketView === "PUBLIC" && (
+                <PublicMarket />
+              )}
+              {page === "Opportunities" && marketView === "SCENARIO" && (
+                <section className="panel">
+                  <div className="filter-bar">
+                    <div className="tabs">
+                      {[
+                        ["ALL", "全部机会"],
+                        ["CARRY", "Carry 策略"],
+                        ["YIELD", "闲置收益"],
+                      ].map(([v, t]) => (
+                        <button
+                          key={v}
+                          className={filter === v ? "selected" : ""}
+                          onClick={() => setFilter(v)}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                    <label className="search">
+                      <Search size={16} />
+                      <input
+                        aria-label="搜索机会"
+                        placeholder="搜索资产或交易所…"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <OpportunityTable
+                    items={data.opportunities.filter(
+                      (o) =>
+                        (filter === "ALL" || o.module === filter) &&
+                        `${o.title} ${o.venues.join(" ")}`
+                          .toLowerCase()
+                          .includes(search.toLowerCase()),
+                    )}
+                    onDetail={setDetail}
+                  />
+                  <div className="table-note">
+                    <CircleHelp size={14} />{" "}
+                    净收益对应实际持有期；年化仅供对比。所有策略当前均为 DRAFT /
+                    尚未验证。
+                  </div>
+                </section>
+              )}
+              {page === "Positions" && (
+                <section className="panel">
+                  <div className="filter-bar">
+                    <div className="tabs">
+                      <button
+                        className={positionTab === "OPEN" ? "selected" : ""}
+                        onClick={() => setPositionTab("OPEN")}
+                      >
+                        当前持仓 · {opened.length}
+                      </button>
+                      <button
+                        className={positionTab === "CLOSED" ? "selected" : ""}
+                        onClick={() => setPositionTab("CLOSED")}
+                      >
+                        已平仓 · {data.positions.length - opened.length}
+                      </button>
+                    </div>
+                    <Tag>PAPER 模拟执行</Tag>
+                  </div>
+                  {data.positions.filter((p) => p.status === positionTab)
+                    .length ? (
+                    <div className="table-wrap">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>持仓</th>
+                            <th>配置资金</th>
+                            <th>预计净收益</th>
+                            <th>已支付模拟入场成本</th>
+                            <th>
+                              {positionTab === "OPEN"
+                                ? "建仓时间"
+                                : "模拟已实现损益"}
+                            </th>
+                            <th />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data.positions
+                            .filter((p) => p.status === positionTab)
+                            .map((pos) => (
+                              <tr key={pos.id}>
+                                <td>
+                                  <div className="instrument">
+                                    <Asset asset={pos.asset} small />
+                                    <div>
+                                      <b>{pos.title}</b>
+                                      <small>{pos.venues.join(" · ")}</small>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>{money(pos.capitalUsd)}</td>
+                                <td>{signed(pos.expectedPnlUsd)}</td>
+                                <td>{money(pos.entryFeeUsd)}</td>
+                                <td>
+                                  {positionTab === "OPEN"
+                                    ? new Date(pos.openedAt).toLocaleString(
+                                        "zh-CN",
+                                      )
+                                    : signed(pos.realizedPnlUsd ?? 0)}
+                                </td>
+                                <td>
+                                  {pos.status === "OPEN" && (
+                                    <button
+                                      className="outline compact"
+                                      onClick={() => setClosing(pos)}
+                                    >
+                                      退出持仓
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <Empty
+                      title={
+                        positionTab === "OPEN"
+                          ? "资金准备好了，等待你的第一步。"
+                          : "还没有已平仓记录"
+                      }
+                      description={
+                        positionTab === "OPEN"
+                          ? "从今日行动或机会列表开始，模拟一笔有依据的资金配置。"
+                          : "退出模拟持仓后，可在这里复核实际记录的成本与损益。"
+                      }
+                    />
+                  )}
+                </section>
+              )}
+              {page === "Portfolio" && (
+                <>
+                  <div className="overview-grid">
+                    <section className="panel">
+                      <div className="panel-title">
+                        <h2>交易所资金清单</h2>
+                        <Tag>仅规划 · 不转账</Tag>
+                      </div>
+                      <div className="inventory-list">
+                        {p.inventory.map((v, i) => (
+                          <div className="inventory-row" key={v.venue}>
+                            <div className={`venue-logo venue-${i}`}>
+                              {v.venue[0]}
+                            </div>
+                            <div>
+                              <b>{v.venue}</b>
+                              <small>可用 {money(v.readyUsd)}</small>
+                            </div>
+                            <div className="inventory-bar">
+                              <i
+                                style={{
+                                  width: `${Math.max(2, (v.allocatedUsd / v.totalUsd) * 100)}%`,
+                                }}
+                              />
+                            </div>
+                            <strong>{money(v.totalUsd, 0)}</strong>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="table-note">
+                        所有余额均为模拟 USD。未连接私有账户，不发起资金转移。
+                      </div>
+                    </section>
+                    <section className="panel">
+                      <div className="panel-title">
+                        <h2>配置约束</h2>
+                        <ShieldCheck size={18} />
+                      </div>
+                      <div className="policy-list">
+                        {[
+                          ["最低现金储备", "15%"],
+                          ["单机会配置上限", "10%"],
+                          ["策略家族上限", "35%"],
+                          ["单交易所 / 单资产上限", "40%"],
+                          ["结算稳定币上限", "80%"],
+                        ].map(([k, v]) => (
+                          <div key={k}>
+                            <span>{k}</span>
+                            <b>{v}</b>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  </div>
+                  <section className="panel">
+                    <div className="panel-title">
+                      <div>
+                        <h2>下一步资金建议</h2>
+                        <p>按边际收益与资金占用时间比较，在约束内逐步配置。</p>
+                      </div>
+                      <Tag>ADVISORY</Tag>
+                    </div>
+                    <div className="plan-list">
+                      {data.actions.map((a) => (
+                        <div key={a.displayTitle}>
+                          <span className="plan-arrow">
+                            <ArrowRight size={18} />
+                          </span>
+                          <div>
+                            <b>{a.displayTitle}</b>
                             <small>
-                              {e.id} · {e.hash.slice(0, 16)}
+                              {a.actionType === "EXECUTE"
+                                ? "从模拟现金配置 · 需手动确认"
+                                : "维持当前配置"}
                             </small>
                           </div>
-                          <time>{new Date(e.at).toLocaleString("zh-CN")}</time>
+                          <strong>{money(a.capitalUsd, 0)}</strong>
+                          <Tag tone="amber">尚未验证</Tag>
                         </div>
                       ))}
+                    </div>
+                    <div className="table-note">
+                      混合持有期计划预期净损益：{money(p.expectedPlanPnlUsd)}
+                      。这不是相同期限的组合收益率。
+                    </div>
+                  </section>
+                </>
+              )}
+              {page === "Performance" && (
+                <>
+                  <div className="performance-hero">
+                    <div>
+                      <span className="eyebrow">ALPHA PROOF</span>
+                      <h2>有收益，还需要有证据。</h2>
+                      <p>
+                        真实价值来自已对账的结果、同窗口基准比较与完整运行成本。
+                      </p>
+                      <Tag tone="amber">证据不足 · UNPROVEN</Tag>
+                    </div>
+                    <div className="proof-symbol">
+                      <ShieldCheck size={64} strokeWidth={1} />
+                    </div>
                   </div>
-                ) : (
-                  <Empty
-                    title="每一个行动，都会留下记录。"
-                    description="模拟执行后，可在此复核事件与账本。"
-                    icon={BookOpen}
-                  />
-                )}
-              </section>
+                  <div className="metrics three">
+                    <div className="metric">
+                      <span>累计模拟已记录损益</span>
+                      <strong>{signed(p.realizedPnlUsd)}</strong>
+                      <small>含未平仓入场成本 · 不等于真实收益</small>
+                    </div>
+                    <div className="metric">
+                      <span>基准调整后超额收益</span>
+                      <strong>—</strong>
+                      <small>尚无同步实盘与基准数据</small>
+                    </div>
+                    <div className="metric">
+                      <span>实盘证据覆盖</span>
+                      <strong>
+                        0 <em>天</em>
+                      </strong>
+                      <small>价值分类要求至少 90 天合格证据</small>
+                    </div>
+                  </div>
+                  <section className="panel">
+                    <div className="panel-title">
+                      <h2>产品价值评估</h2>
+                      <Tag>证据不足</Tag>
+                    </div>
+                    <div className="value-grid">
+                      {[
+                        [
+                          "Alpha 价值",
+                          "尚未验证",
+                          "等待已实现、已对账的超额收益",
+                        ],
+                        ["风险降低价值", "证据不足", "等待同步窗口的回撤比较"],
+                        [
+                          "操作效率价值",
+                          "未开始计量",
+                          "需要测量或所有者记录的工时",
+                        ],
+                        [
+                          "扩张决策",
+                          "尚未评估",
+                          "不因预期收益或功能完成而扩张",
+                        ],
+                      ].map(([t, v, desc]) => (
+                        <div key={t}>
+                          <span>{t}</span>
+                          <h3>{v}</h3>
+                          <p>{desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                  <section className="panel">
+                    <div className="panel-title">
+                      <h2>模拟执行流水</h2>
+                      <span>{data.events.length} 条事件</span>
+                    </div>
+                    {data.events.length ? (
+                      <div className="event-list">
+                        {data.events
+                          .slice(-10)
+                          .reverse()
+                          .map((e) => (
+                            <div key={e.id}>
+                              <span className="event-dot" />
+                              <div>
+                                <b>
+                                  {{
+                                    PAPER_OPEN: "模拟建仓",
+                                    PAPER_CLOSE: "模拟退出",
+                                    KILL_SWITCH_ON: "暂停新建仓",
+                                    KILL_SWITCH_OFF: "恢复新建仓",
+                                    SCENARIO_REFRESH: "刷新模拟场景",
+                                    INTELLIGENCE_MODE_CHANGED: "切换解释模式",
+                                  }[e.type] ?? e.type}
+                                </b>
+                                <small>
+                                  {e.id} · {e.hash.slice(0, 16)}
+                                </small>
+                              </div>
+                              <time>
+                                {new Date(e.at).toLocaleString("zh-CN")}
+                              </time>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <Empty
+                        title="每一个行动，都会留下记录。"
+                        description="模拟执行后，可在此复核事件与账本。"
+                        icon={BookOpen}
+                      />
+                    )}
+                  </section>
+                </>
+              )}
             </>
           )}
           <footer>

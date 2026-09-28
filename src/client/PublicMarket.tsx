@@ -162,7 +162,9 @@ function Dialog({
     </div>
   );
 }
-export default function PublicMarket() {
+export default function PublicMarket({
+  onSimulate,
+}: { onSimulate?: (id: string) => void } = {}) {
   const [state, setState] = useState<PublicMarketState | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -631,6 +633,17 @@ export default function PublicMarket() {
             当前为只读研究候选。市场容量{" "}
             {money(detail.candidate.marketCapacityUsd)}；账户可执行容量未知。
           </div>
+          {onSimulate && (
+            <button
+              className="primary"
+              onClick={() => {
+                onSimulate(detail.candidate.id);
+                setDetail(null);
+              }}
+            >
+              使用真实行情模拟这笔交易
+            </button>
+          )}
           <h3>仍缺少的执行证据</h3>
           <ul className="public-blockers">
             {detail.candidate.executionBlockers.map((r: string) => (
