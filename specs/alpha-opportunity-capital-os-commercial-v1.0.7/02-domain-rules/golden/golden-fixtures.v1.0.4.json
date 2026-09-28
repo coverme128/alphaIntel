@@ -1,0 +1,785 @@
+{
+  "version": "1.0.4",
+  "units": {
+    "Pct": "percentage_points"
+  },
+  "strategyFixtures": [
+    {
+      "id": "FN_POSITIVE_001",
+      "strategy": "FUNDING_NEUTRAL",
+      "class": "positive_qualification",
+      "inputs": {
+        "expectedFundingPct": 0.18,
+        "expectedCostPct": 0.06,
+        "reservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "expectedNetPct": 0.1,
+        "qualified": true
+      }
+    },
+    {
+      "id": "FN_COST_FAIL_002",
+      "strategy": "FUNDING_NEUTRAL",
+      "class": "cost_erases_edge",
+      "inputs": {
+        "expectedFundingPct": 0.12,
+        "expectedCostPct": 0.08,
+        "reservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "expectedNetPct": 0.02,
+        "qualified": false,
+        "reasonCodes": [
+          "NET_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "FN_STALE_003",
+      "strategy": "FUNDING_NEUTRAL",
+      "class": "stale_input",
+      "inputs": {
+        "expectedFundingPct": 0.18,
+        "expectedCostPct": 0.06,
+        "reservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3,
+        "stale": true,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "status": "STALE"
+      }
+    },
+    {
+      "id": "FN_CAPACITY_004",
+      "strategy": "FUNDING_NEUTRAL",
+      "class": "insufficient_capacity",
+      "inputs": {
+        "expectedFundingPct": 0.18,
+        "expectedCostPct": 0.06,
+        "reservePct": 0.02,
+        "capacityUsd": 4999,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "reasonCodes": [
+          "CAPACITY_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "FN_RISK_005",
+      "strategy": "FUNDING_NEUTRAL",
+      "class": "hard_risk_block",
+      "inputs": {
+        "expectedFundingPct": 0.18,
+        "expectedCostPct": 0.06,
+        "reservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3,
+        "stale": false,
+        "hardBlock": true
+      },
+      "expected": {
+        "qualified": false,
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "id": "FN_EXIT_006",
+      "strategy": "FUNDING_NEUTRAL",
+      "class": "exit_trigger",
+      "inputs": {
+        "continuationFundingPct": 0.025,
+        "modeledExitCostPct": 0.01,
+        "remainingBasisReservePct": 0.005
+      },
+      "expected": {
+        "continuationNetPct": 0.01,
+        "exitTriggered": true,
+        "reasonCodes": [
+          "CONTINUATION_NET_FLOOR"
+        ]
+      }
+    },
+    {
+      "id": "BASIS_POSITIVE_001",
+      "strategy": "BASIS_CASH_CARRY",
+      "class": "positive_qualification",
+      "inputs": {
+        "grossBasisPct": 3.0,
+        "expectedCostPct": 0.42,
+        "reservePct": 0.1,
+        "daysToExpiry": 90,
+        "capacityUsd": 50000,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "expectedNetPct": 2.48,
+        "annualizedNetPct": 10.057777777777778,
+        "qualified": true
+      }
+    },
+    {
+      "id": "BASIS_COST_FAIL_002",
+      "strategy": "BASIS_CASH_CARRY",
+      "class": "cost_erases_edge",
+      "inputs": {
+        "grossBasisPct": 1.0,
+        "expectedCostPct": 0.5,
+        "reservePct": 0.1,
+        "daysToExpiry": 90,
+        "capacityUsd": 50000,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "expectedNetPct": 0.4,
+        "annualizedNetPct": 1.6222222222222222,
+        "qualified": false,
+        "reasonCodes": [
+          "NET_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "BASIS_STALE_003",
+      "strategy": "BASIS_CASH_CARRY",
+      "class": "stale_input",
+      "inputs": {
+        "grossBasisPct": 3.0,
+        "expectedCostPct": 0.42,
+        "reservePct": 0.1,
+        "daysToExpiry": 90,
+        "capacityUsd": 50000,
+        "stale": true,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "status": "STALE"
+      }
+    },
+    {
+      "id": "BASIS_CAPACITY_004",
+      "strategy": "BASIS_CASH_CARRY",
+      "class": "insufficient_capacity",
+      "inputs": {
+        "grossBasisPct": 3.0,
+        "expectedCostPct": 0.42,
+        "reservePct": 0.1,
+        "daysToExpiry": 90,
+        "capacityUsd": 4000,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "reasonCodes": [
+          "CAPACITY_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "BASIS_RISK_005",
+      "strategy": "BASIS_CASH_CARRY",
+      "class": "hard_risk_block",
+      "inputs": {
+        "grossBasisPct": 3.0,
+        "expectedCostPct": 0.42,
+        "reservePct": 0.1,
+        "daysToExpiry": 90,
+        "capacityUsd": 50000,
+        "stale": false,
+        "hardBlock": true
+      },
+      "expected": {
+        "qualified": false,
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "id": "BASIS_EXIT_006",
+      "strategy": "BASIS_CASH_CARRY",
+      "class": "exit_trigger",
+      "inputs": {
+        "originalExpectedPnlUsd": 1000,
+        "executableClosePnlUsd": 850,
+        "remainingAnnualizedPct": 5.0
+      },
+      "expected": {
+        "realizationFraction": 0.85,
+        "exitTriggered": true,
+        "reasonCodes": [
+          "EARLY_REALIZATION_AND_LOW_REMAINING_RETURN"
+        ]
+      }
+    },
+    {
+      "id": "XCF_POSITIVE_001",
+      "strategy": "CROSS_EXCHANGE_FUNDING",
+      "class": "positive_qualification",
+      "inputs": {
+        "expectedFundingDifferentialPct": 0.24,
+        "expectedCostPct": 0.1,
+        "reservePct": 0.02,
+        "capacityUsd": 15000,
+        "scheduledFundingEvents": 4,
+        "crossVenuePremiumPct": 0.2,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "expectedNetPct": 0.12,
+        "qualified": true
+      }
+    },
+    {
+      "id": "XCF_COST_FAIL_002",
+      "strategy": "CROSS_EXCHANGE_FUNDING",
+      "class": "cost_erases_edge",
+      "inputs": {
+        "expectedFundingDifferentialPct": 0.18,
+        "expectedCostPct": 0.1,
+        "reservePct": 0.02,
+        "capacityUsd": 15000,
+        "scheduledFundingEvents": 4,
+        "crossVenuePremiumPct": 0.2,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "expectedNetPct": 0.06,
+        "qualified": false,
+        "reasonCodes": [
+          "NET_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "XCF_STALE_003",
+      "strategy": "CROSS_EXCHANGE_FUNDING",
+      "class": "stale_input",
+      "inputs": {
+        "expectedFundingDifferentialPct": 0.24,
+        "expectedCostPct": 0.1,
+        "reservePct": 0.02,
+        "capacityUsd": 15000,
+        "scheduledFundingEvents": 4,
+        "crossVenuePremiumPct": 0.2,
+        "stale": true,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "status": "STALE"
+      }
+    },
+    {
+      "id": "XCF_CAPACITY_004",
+      "strategy": "CROSS_EXCHANGE_FUNDING",
+      "class": "insufficient_capacity",
+      "inputs": {
+        "expectedFundingDifferentialPct": 0.24,
+        "expectedCostPct": 0.1,
+        "reservePct": 0.02,
+        "capacityUsd": 4500,
+        "scheduledFundingEvents": 4,
+        "crossVenuePremiumPct": 0.2,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "reasonCodes": [
+          "CAPACITY_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "XCF_RISK_005",
+      "strategy": "CROSS_EXCHANGE_FUNDING",
+      "class": "hard_risk_block",
+      "inputs": {
+        "expectedFundingDifferentialPct": 0.24,
+        "expectedCostPct": 0.1,
+        "reservePct": 0.02,
+        "capacityUsd": 15000,
+        "scheduledFundingEvents": 4,
+        "crossVenuePremiumPct": 0.2,
+        "stale": false,
+        "hardBlock": true
+      },
+      "expected": {
+        "qualified": false,
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "id": "XCF_EXIT_006",
+      "strategy": "CROSS_EXCHANGE_FUNDING",
+      "class": "exit_trigger",
+      "inputs": {
+        "next8hFundingDifferentialPct": 0.03,
+        "expectedExitCostPct": 0.015,
+        "premiumDivergenceReservePct": 0.005
+      },
+      "expected": {
+        "continuationNetPct": 0.01,
+        "exitTriggered": true,
+        "reasonCodes": [
+          "NEXT_8H_CONTINUATION_FLOOR"
+        ]
+      }
+    },
+    {
+      "id": "SPREAD_POSITIVE_001",
+      "strategy": "CROSS_EXCHANGE_SPREAD",
+      "class": "positive_qualification",
+      "inputs": {
+        "grossSpreadPct": 0.18,
+        "expectedCostPct": 0.09,
+        "reservePct": 0.02,
+        "capacityUsd": 10000,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "expectedNetPct": 0.07,
+        "qualified": true
+      }
+    },
+    {
+      "id": "SPREAD_COST_FAIL_002",
+      "strategy": "CROSS_EXCHANGE_SPREAD",
+      "class": "cost_erases_edge",
+      "inputs": {
+        "grossSpreadPct": 0.12,
+        "expectedCostPct": 0.09,
+        "reservePct": 0.02,
+        "capacityUsd": 10000,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "expectedNetPct": 0.01,
+        "qualified": false,
+        "reasonCodes": [
+          "NET_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "SPREAD_STALE_003",
+      "strategy": "CROSS_EXCHANGE_SPREAD",
+      "class": "stale_input",
+      "inputs": {
+        "grossSpreadPct": 0.18,
+        "expectedCostPct": 0.09,
+        "reservePct": 0.02,
+        "capacityUsd": 10000,
+        "stale": true,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "status": "STALE"
+      }
+    },
+    {
+      "id": "SPREAD_CAPACITY_004",
+      "strategy": "CROSS_EXCHANGE_SPREAD",
+      "class": "insufficient_capacity",
+      "inputs": {
+        "grossSpreadPct": 0.18,
+        "expectedCostPct": 0.09,
+        "reservePct": 0.02,
+        "capacityUsd": 1500,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "reasonCodes": [
+          "CAPACITY_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "SPREAD_RISK_005",
+      "strategy": "CROSS_EXCHANGE_SPREAD",
+      "class": "hard_risk_block",
+      "inputs": {
+        "grossSpreadPct": 0.18,
+        "expectedCostPct": 0.09,
+        "reservePct": 0.02,
+        "capacityUsd": 10000,
+        "stale": false,
+        "hardBlock": true
+      },
+      "expected": {
+        "qualified": false,
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "id": "SPREAD_EXIT_006",
+      "strategy": "CROSS_EXCHANGE_SPREAD",
+      "class": "exit_trigger",
+      "inputs": {
+        "freshUntilPassed": true,
+        "ordersSubmitted": false
+      },
+      "expected": {
+        "exitTriggered": true,
+        "status": "STALE",
+        "reasonCodes": [
+          "OPPORTUNITY_EXPIRED"
+        ]
+      }
+    },
+    {
+      "id": "YIELD_POSITIVE_001",
+      "strategy": "IDLE_CAPITAL_YIELD",
+      "class": "positive_qualification",
+      "inputs": {
+        "productTermReturnPct": 0.6575342465753424,
+        "baselineTermReturnPct": 0.3287671232876712,
+        "expectedCostPct": 0.02,
+        "annualizedIncrementalPctPoints": 4.0,
+        "lockDays": 0,
+        "redemptionHours": 2,
+        "riskTier": "A",
+        "capacityUsd": 20000,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "incrementalNetPct": 0.3087671232876712,
+        "qualified": true
+      }
+    },
+    {
+      "id": "YIELD_COST_FAIL_002",
+      "strategy": "IDLE_CAPITAL_YIELD",
+      "class": "cost_erases_edge",
+      "inputs": {
+        "productTermReturnPct": 0.4931506849315068,
+        "baselineTermReturnPct": 0.410958904109589,
+        "expectedCostPct": 0.05,
+        "annualizedIncrementalPctPoints": 1.0,
+        "lockDays": 0,
+        "redemptionHours": 2,
+        "riskTier": "A",
+        "capacityUsd": 20000,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "incrementalNetPct": 0.0321917808219178,
+        "qualified": false,
+        "reasonCodes": [
+          "INCREMENTAL_RATE_OR_NET_BELOW_MIN"
+        ]
+      }
+    },
+    {
+      "id": "YIELD_STALE_003",
+      "strategy": "IDLE_CAPITAL_YIELD",
+      "class": "stale_input",
+      "inputs": {
+        "productTermReturnPct": 0.6575342465753424,
+        "baselineTermReturnPct": 0.3287671232876712,
+        "expectedCostPct": 0.02,
+        "annualizedIncrementalPctPoints": 4.0,
+        "lockDays": 0,
+        "redemptionHours": 2,
+        "riskTier": "A",
+        "capacityUsd": 20000,
+        "stale": true,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "status": "STALE"
+      }
+    },
+    {
+      "id": "YIELD_CAPACITY_004",
+      "strategy": "IDLE_CAPITAL_YIELD",
+      "class": "insufficient_capacity",
+      "inputs": {
+        "productTermReturnPct": 0.6575342465753424,
+        "baselineTermReturnPct": 0.3287671232876712,
+        "expectedCostPct": 0.02,
+        "annualizedIncrementalPctPoints": 4.0,
+        "lockDays": 0,
+        "redemptionHours": 2,
+        "riskTier": "A",
+        "capacityUsd": 0,
+        "stale": false,
+        "hardBlock": false
+      },
+      "expected": {
+        "qualified": false,
+        "reasonCodes": [
+          "NO_EXECUTABLE_CAPACITY"
+        ]
+      }
+    },
+    {
+      "id": "YIELD_RISK_005",
+      "strategy": "IDLE_CAPITAL_YIELD",
+      "class": "hard_risk_block",
+      "inputs": {
+        "productTermReturnPct": 0.6575342465753424,
+        "baselineTermReturnPct": 0.3287671232876712,
+        "expectedCostPct": 0.02,
+        "annualizedIncrementalPctPoints": 4.0,
+        "lockDays": 0,
+        "redemptionHours": 2,
+        "riskTier": "D",
+        "capacityUsd": 20000,
+        "stale": false,
+        "hardBlock": true
+      },
+      "expected": {
+        "qualified": false,
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "id": "YIELD_EXIT_006",
+      "strategy": "IDLE_CAPITAL_YIELD",
+      "class": "exit_trigger",
+      "inputs": {
+        "termMatured": true
+      },
+      "expected": {
+        "exitTriggered": true,
+        "reasonCodes": [
+          "TERM_MATURED_REDEEM_OR_ROLL_REEVALUATION"
+        ]
+      }
+    }
+  ],
+  "sharedRuleFixtures": [
+    {
+      "id": "RISK_NA_NORMALIZATION_001",
+      "rule": "RISK_SCORING",
+      "inputs": {
+        "dimensions": [
+          {
+            "score": 50,
+            "weight": 20,
+            "applicable": true
+          },
+          {
+            "score": 100,
+            "weight": 10,
+            "applicable": true
+          },
+          {
+            "score": 0,
+            "weight": 70,
+            "applicable": false
+          }
+        ]
+      },
+      "expected": {
+        "riskScore": 66.66666666666667,
+        "level": "MEDIUM_HIGH"
+      }
+    },
+    {
+      "id": "MARGIN_STRESS_001",
+      "rule": "MARGIN_LIQUIDATION",
+      "inputs": {
+        "accountEquityUsd": 10000,
+        "maintenanceMarginUsd": 1000,
+        "pendingFeeReserveUsd": 100,
+        "derivativeDeltaUsd": 50000,
+        "stressMovePct": 5
+      },
+      "expected": {
+        "maintenanceCoverage": 10,
+        "marginBufferUsd": 8900,
+        "stressLossUsd": 2500,
+        "postStressMarginBufferUsd": 6400,
+        "hardBlock": false
+      }
+    },
+    {
+      "id": "MARGIN_BLOCK_002",
+      "rule": "MARGIN_LIQUIDATION",
+      "inputs": {
+        "accountEquityUsd": 3000,
+        "maintenanceMarginUsd": 1200,
+        "pendingFeeReserveUsd": 100,
+        "derivativeDeltaUsd": 40000,
+        "stressMovePct": 5
+      },
+      "expected": {
+        "maintenanceCoverage": 2.5,
+        "marginBufferUsd": 1700,
+        "stressLossUsd": 2000,
+        "postStressMarginBufferUsd": -300,
+        "hardBlock": true
+      }
+    },
+    {
+      "id": "INSTR_LINEAR_001",
+      "rule": "INSTRUMENT_NORMALIZATION",
+      "inputs": {
+        "sideSign": -1,
+        "contracts": 100,
+        "basePerContract": 0.01,
+        "markPrice": 3000
+      },
+      "expected": {
+        "baseExposure": -1.0,
+        "usdNotional": 3000,
+        "deltaUsdApprox": -3000
+      }
+    },
+    {
+      "id": "INSTR_INVERSE_002",
+      "rule": "INSTRUMENT_NORMALIZATION",
+      "inputs": {
+        "sideSign": -1,
+        "contracts": 1000,
+        "usdPerContract": 1,
+        "markPrice": 50000
+      },
+      "expected": {
+        "baseExposureApprox": -0.02,
+        "usdNotional": 1000,
+        "deltaUsdApprox": -1000
+      }
+    },
+    {
+      "id": "SIZE_MARGINAL_001",
+      "rule": "ECONOMICS_BY_SIZE",
+      "inputs": {
+        "oldSizeUsd": 5000,
+        "oldExpectedNetPct": 0.18,
+        "newSizeUsd": 10000,
+        "newExpectedNetPct": 0.14
+      },
+      "expected": {
+        "oldExpectedPnlUsd": 9,
+        "newExpectedPnlUsd": 14,
+        "marginalExpectedPnlUsd": 5,
+        "marginalExpectedNetPct": 0.1
+      }
+    },
+    {
+      "id": "PORTFOLIO_RETURN_001",
+      "rule": "PORTFOLIO_RETURN",
+      "inputs": {
+        "portfolioEquityUsd": 100000,
+        "allocations": [
+          {
+            "notionalUsd": 10000,
+            "expectedNetPct": 0.2,
+            "effectiveLockDays": 1
+          },
+          {
+            "notionalUsd": 20000,
+            "expectedNetPct": 0.5,
+            "effectiveLockDays": 10
+          }
+        ]
+      },
+      "expected": {
+        "expectedPlanPnlUsd": 120,
+        "expectedPortfolioEquityImpactPct": 0.12,
+        "capitalDays": 210000,
+        "capitalDayExpectedReturnPct": 0.05714285714285715,
+        "simpleAnnualizedComparisonPct": 20.857142857142858
+      }
+    },
+    {
+      "id": "VALUATION_STABLECOIN_001",
+      "rule": "VALUATION",
+      "inputs": {
+        "amount": 10000,
+        "canonicalUsdPrice": 0.985
+      },
+      "expected": {
+        "usdValue": 9850
+      }
+    },
+    {
+      "id": "TWR_NO_FLOW_001",
+      "rule": "TWR",
+      "inputs": {
+        "subperiods": [
+          {
+            "startNavUsd": 100000,
+            "endNavUsd": 102000
+          },
+          {
+            "startNavUsd": 102000,
+            "endNavUsd": 103020
+          }
+        ]
+      },
+      "expected": {
+        "twrPct": 3.02
+      }
+    },
+    {
+      "id": "TWR_FLOW_BOUNDARY_002",
+      "rule": "TWR",
+      "inputs": {
+        "subperiods": [
+          {
+            "startNavUsd": 100000,
+            "endNavUsd": 101000
+          },
+          {
+            "startNavUsd": 111000,
+            "endNavUsd": 112110
+          }
+        ]
+      },
+      "expected": {
+        "twrPct": 2.01
+      }
+    },
+    {
+      "id": "COST_RESERVE_SEPARATION_001",
+      "rule": "COST_RESERVE",
+      "inputs": {
+        "grossPct": 0.3,
+        "expectedCostsPct": 0.08,
+        "reservesPct": 0.04
+      },
+      "expected": {
+        "expectedNetPct": 0.18,
+        "realizedCostCannotIncludeReserveByDefault": true
+      }
+    }
+  ]
+}

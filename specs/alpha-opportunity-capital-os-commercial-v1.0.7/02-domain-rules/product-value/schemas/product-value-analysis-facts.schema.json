@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProductValueAnalysisFacts",
+  "type": "object",
+  "required": [
+    "factsVersion",
+    "valueClassification",
+    "expansionDecision",
+    "survivalDecision",
+    "alphaFacts",
+    "riskFacts",
+    "operationsFacts",
+    "reasonCodes"
+  ],
+  "properties": {
+    "factsVersion": {
+      "const": "product-value-analysis-facts-v1.0.5"
+    },
+    "valueClassification": {
+      "type": "string"
+    },
+    "expansionDecision": {
+      "type": "string"
+    },
+    "survivalDecision": {
+      "type": "string"
+    },
+    "alphaFacts": {
+      "type": "object"
+    },
+    "riskFacts": {
+      "type": "object"
+    },
+    "operationsFacts": {
+      "type": "object"
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "aiRules": {
+      "type": "object",
+      "properties": {
+        "mayRecalculate": {
+          "const": false
+        },
+        "mayOverrideDecision": {
+          "const": false
+        }
+      }
+    }
+  }
+}

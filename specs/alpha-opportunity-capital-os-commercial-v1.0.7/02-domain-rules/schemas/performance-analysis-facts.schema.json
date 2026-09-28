@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PerformanceAnalysisFacts",
+  "type": "object",
+  "required": [
+    "factsVersion",
+    "periodStart",
+    "periodEnd",
+    "endingNavUsd",
+    "realizedNetPnlUsd",
+    "portfolioTwrPct",
+    "benchmarkTwrPct",
+    "excessTwrPct",
+    "economicValueUsd",
+    "economicStatus",
+    "provenance"
+  ],
+  "properties": {
+    "factsVersion": {
+      "const": "performance-analysis-facts-v1.0.4"
+    },
+    "periodStart": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "periodEnd": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endingNavUsd": {
+      "type": "number"
+    },
+    "realizedNetPnlUsd": {
+      "type": "number"
+    },
+    "portfolioTwrPct": {
+      "type": "number"
+    },
+    "benchmarkTwrPct": {
+      "type": "number"
+    },
+    "excessTwrPct": {
+      "type": "number"
+    },
+    "annualizedPortfolioTwrPct": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "annualizedBenchmarkTwrPct": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "maxDrawdownPct": {
+      "type": "number"
+    },
+    "productRunCostUsd": {
+      "type": "number"
+    },
+    "economicValueUsd": {
+      "type": "number"
+    },
+    "economicStatus": {
+      "type": "string"
+    },
+    "strategyAttribution": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "costAttribution": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "valuationPolicyVersion",
+        "twrFormulaVersion"
+      ],
+      "properties": {
+        "valuationPolicyVersion": {
+          "type": "string"
+        },
+        "twrFormulaVersion": {
+          "type": "string"
+        },
+        "reportHash": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

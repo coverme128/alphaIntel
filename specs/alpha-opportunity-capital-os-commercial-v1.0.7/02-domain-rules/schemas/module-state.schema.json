@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AlphaModuleState",
+  "type": "object",
+  "required": [
+    "moduleId",
+    "implementationStatus",
+    "economicStatus",
+    "executionCeiling",
+    "allocationEligibility"
+  ],
+  "properties": {
+    "moduleId": {
+      "enum": [
+        "CARRY",
+        "YIELD",
+        "STRUCTURED",
+        "OPTIONS"
+      ]
+    },
+    "implementationStatus": {
+      "enum": [
+        "CONTRACT_READY",
+        "IMPLEMENTED",
+        "DISABLED"
+      ]
+    },
+    "economicStatus": {
+      "enum": [
+        "UNPROVEN",
+        "REPLAY_POSITIVE",
+        "PAPER_POSITIVE",
+        "LIVE_POSITIVE",
+        "ALPHA_VALIDATED",
+        "EVIDENCE_INSUFFICIENT",
+        "INVALIDATED"
+      ]
+    },
+    "executionCeiling": {
+      "enum": [
+        "DISABLED",
+        "PAPER",
+        "ASSISTED",
+        "AUTO"
+      ]
+    },
+    "allocationEligibility": {
+      "enum": [
+        "DISABLED",
+        "ADVISORY",
+        "LIVE"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "economic-validation-run.schema.json",
+  "title": "EconomicValidationRun",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "runId",
+    "mode",
+    "portfolioId",
+    "policyVersion",
+    "startTime",
+    "endTime",
+    "inputLedgerHash",
+    "benchmarkSeriesHash",
+    "outputReportId"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "REPLAY",
+        "PAPER",
+        "LIVE"
+      ]
+    },
+    "portfolioId": {
+      "type": "string"
+    },
+    "policyVersion": {
+      "type": "string"
+    },
+    "startTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "inputLedgerHash": {
+      "type": "string"
+    },
+    "benchmarkSeriesHash": {
+      "type": "string"
+    },
+    "marketDataHashes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "strategyConfigHashes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "connectorVersions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "outputReportId": {
+      "type": "string"
+    }
+  }
+}

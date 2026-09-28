@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Opportunity",
+  "type": "object",
+  "required": [
+    "id",
+    "moduleId",
+    "strategyId",
+    "strategyVersion",
+    "status",
+    "instruments",
+    "observedAt",
+    "freshUntil",
+    "returns",
+    "costs",
+    "capacity",
+    "risk",
+    "entry",
+    "exit",
+    "analysisFactsRef"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "moduleId": {
+      "enum": [
+        "CARRY",
+        "YIELD",
+        "STRUCTURED",
+        "OPTIONS"
+      ]
+    },
+    "strategyId": {
+      "type": "string"
+    },
+    "strategyVersion": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "OBSERVED",
+        "CANDIDATE",
+        "QUALIFIED",
+        "STALE",
+        "BLOCKED"
+      ]
+    },
+    "instruments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "venue",
+          "symbol",
+          "instrumentType",
+          "canonicalAsset"
+        ],
+        "properties": {
+          "venue": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "canonicalAsset": {
+            "type": "string"
+          },
+          "settlementAsset": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "instrumentType": {
+            "enum": [
+              "SPOT",
+              "PERPETUAL",
+              "FUTURE",
+              "YIELD",
+              "OPTION",
+              "STRUCTURED_PRODUCT"
+            ]
+          },
+          "contractModel": {
+            "enum": [
+              "SPOT",
+              "LINEAR",
+              "INVERSE"
+            ]
+          }
+        }
+      }
+    },
+    "observedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "freshUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "returns": {
+      "type": "object",
+      "required": [
+        "grossHoldingPeriodPct",
+        "holdingPeriodExpectedNetPct",
+        "expectedHoldingSeconds",
+        "repeatability"
+      ],
+      "properties": {
+        "grossHoldingPeriodPct": {
+          "type": "number"
+        },
+        "knownPct": {
+          "type": "number"
+        },
+        "variableExpectedPct": {
+          "type": "number"
+        },
+        "holdingPeriodExpectedNetPct": {
+          "type": "number"
+        },
+        "simpleAnnualizedEquivalentPct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "annualizedComparisonOnly": {
+          "type": "boolean"
+        },
+        "expectedHoldingSeconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "repeatability": {
+          "enum": [
+            "CONTRACTUAL_RECURRING",
+            "CONDITION_DEPENDENT",
+            "ONE_SHOT"
+          ]
+        }
+      }
+    },
+    "costs": {
+      "type": "object",
+      "required": [
+        "expected",
+        "reserves"
+      ],
+      "properties": {
+        "expected": {
+          "type": "object",
+          "required": [
+            "totalExpectedCostPct"
+          ],
+          "properties": {
+            "tradingFeesPct": {
+              "type": "number"
+            },
+            "settlementFeesPct": {
+              "type": "number"
+            },
+            "entrySlippagePct": {
+              "type": "number"
+            },
+            "exitSlippagePct": {
+              "type": "number"
+            },
+            "borrowPct": {
+              "type": "number"
+            },
+            "transferPct": {
+              "type": "number"
+            },
+            "rebalancePct": {
+              "type": "number"
+            },
+            "productFeesPct": {
+              "type": "number"
+            },
+            "totalExpectedCostPct": {
+              "type": "number"
+            }
+          }
+        },
+        "reserves": {
+          "type": "object",
+          "required": [
+            "totalReservePct"
+          ],
+          "properties": {
+            "basisAdversePct": {
+              "type": "number"
+            },
+            "premiumDivergencePct": {
+              "type": "number"
+            },
+            "liquidityUncertaintyPct": {
+              "type": "number"
+            },
+            "emergencyHedgePct": {
+              "type": "number"
+            },
+            "modelUncertaintyPct": {
+              "type": "number"
+            },
+            "totalReservePct": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "capacity": {
+      "type": "object",
+      "required": [
+        "maxNotionalUsd",
+        "slippageLimitBps",
+        "economicsBySize"
+      ],
+      "properties": {
+        "maxNotionalUsd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "recommendedNotionalUsd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "slippageLimitBps": {
+          "type": "number",
+          "minimum": 0
+        },
+        "economicsBySize": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "title": "EconomicsBySize",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "notionalUsd",
+              "expectedNetPct",
+              "expectedPnlUsd",
+              "qualifiedAtSize"
+            ],
+            "properties": {
+              "notionalUsd": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "grossPct": {
+                "type": "number"
+              },
+              "executableGrossPct": {
+                "type": "number"
+              },
+              "slippagePct": {
+                "type": "number"
+              },
+              "totalExpectedCostPct": {
+                "type": "number"
+              },
+              "totalReservePct": {
+                "type": "number"
+              },
+              "expectedNetPct": {
+                "type": "number"
+              },
+              "expectedPnlUsd": {
+                "type": "number"
+              },
+              "qualifiedAtSize": {
+                "type": "boolean"
+              },
+              "failureReasonCodes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "required": [
+        "level",
+        "score",
+        "dimensionBreakdown",
+        "flags",
+        "hardBlocks"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "LOW",
+            "MEDIUM_LOW",
+            "MEDIUM",
+            "MEDIUM_HIGH",
+            "HIGH",
+            "BLOCKED"
+          ]
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "dimensionBreakdown": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "dimension",
+              "applicable",
+              "weight"
+            ],
+            "properties": {
+              "dimension": {
+                "type": "string"
+              },
+              "applicable": {
+                "type": "boolean"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "reasonCodes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hardBlocks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "entry": {
+      "type": "object"
+    },
+    "exit": {
+      "type": "object"
+    },
+    "analysisFactsRef": {
+      "type": "string"
+    },
+    "calculationFactIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "traceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

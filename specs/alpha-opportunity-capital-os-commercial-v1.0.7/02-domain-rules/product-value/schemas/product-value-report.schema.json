@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProductValueReport",
+  "type": "object",
+  "required": [
+    "reportVersion",
+    "periodStart",
+    "periodEnd",
+    "evidenceDays",
+    "alpha",
+    "risk",
+    "operations",
+    "valueClassification",
+    "expansionDecision",
+    "survivalDecision",
+    "provenance"
+  ],
+  "properties": {
+    "reportVersion": {
+      "const": "product-value-report-v1.0.5"
+    },
+    "periodStart": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "periodEnd": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidenceDays": {
+      "type": "number",
+      "minimum": 0
+    },
+    "alpha": {
+      "type": "object",
+      "required": [
+        "portfolioTwrPct",
+        "benchmarkTwrPct",
+        "excessTwrPct",
+        "economicValueUsd",
+        "productRunCostUsd"
+      ],
+      "properties": {
+        "portfolioTwrPct": {
+          "type": "number"
+        },
+        "benchmarkTwrPct": {
+          "type": "number"
+        },
+        "excessTwrPct": {
+          "type": "number"
+        },
+        "annualizedExcessTwrPct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "economicValueUsd": {
+          "type": "number"
+        },
+        "productRunCostUsd": {
+          "type": "number"
+        },
+        "economicStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "required": [
+        "systemMaxDrawdownPct",
+        "benchmarkMaxDrawdownPct",
+        "absoluteDrawdownImprovementPctPoints",
+        "relativeDrawdownReductionPct",
+        "hardRiskBreaches",
+        "severity1Incidents"
+      ],
+      "properties": {
+        "systemMaxDrawdownPct": {
+          "type": "number"
+        },
+        "benchmarkMaxDrawdownPct": {
+          "type": "number"
+        },
+        "absoluteDrawdownImprovementPctPoints": {
+          "type": "number"
+        },
+        "relativeDrawdownReductionPct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "hardRiskBreaches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "severity1Incidents": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "operations": {
+      "type": "object",
+      "required": [
+        "baselineManualHours",
+        "actualManualHours",
+        "manualHoursSaved",
+        "manualTimeReductionPct",
+        "sourceQuality"
+      ],
+      "properties": {
+        "baselineManualHours": {
+          "type": "number",
+          "minimum": 0
+        },
+        "actualManualHours": {
+          "type": "number",
+          "minimum": 0
+        },
+        "manualHoursSaved": {
+          "type": "number",
+          "minimum": 0
+        },
+        "manualTimeReductionPct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "annualizedHoursSaved": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "sourceQuality": {
+          "enum": [
+            "MEASURED",
+            "OWNER_LOGGED",
+            "ESTIMATED_BASELINE",
+            "MIXED"
+          ]
+        },
+        "measuredOrOwnerLoggedCoveragePct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "operationalValueUsd": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "valueClassification": {
+      "enum": [
+        "EVIDENCE_INSUFFICIENT",
+        "ALPHA_PRODUCT_SUCCESS",
+        "RISK_CAPITAL_OS_VALUE",
+        "AUTOMATION_VALUE_ONLY",
+        "NO_MATERIAL_VALUE"
+      ]
+    },
+    "expansionDecision": {
+      "enum": [
+        "NOT_EVALUATED",
+        "EXPANSION_WORTHY",
+        "DO_NOT_EXPAND"
+      ]
+    },
+    "survivalDecision": {
+      "enum": [
+        "EVIDENCE_INSUFFICIENT",
+        "CONTINUE",
+        "KEEP_REDUCED_SCOPE",
+        "STOP_PRODUCT"
+      ]
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "alphaProofPolicyVersion",
+        "productValuePolicyVersion",
+        "reportHash"
+      ],
+      "properties": {
+        "alphaProofPolicyVersion": {
+          "type": "string"
+        },
+        "productValuePolicyVersion": {
+          "const": "1.0.5"
+        },
+        "reportHash": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

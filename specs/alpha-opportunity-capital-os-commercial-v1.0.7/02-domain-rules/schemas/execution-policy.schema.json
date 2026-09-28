@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExecutionPolicy",
+  "type": "object",
+  "required": [
+    "mode",
+    "maxSingleTradeUsd",
+    "maxTotalOpenUsd",
+    "minExpectedNetPct",
+    "allowedStrategies",
+    "allowedVenues",
+    "cashReservePct"
+  ],
+  "properties": {
+    "mode": {
+      "enum": [
+        "PAPER",
+        "ASSISTED",
+        "AUTO"
+      ]
+    },
+    "maxSingleTradeUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "maxTotalOpenUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "minExpectedNetPct": {
+      "type": "number"
+    },
+    "maxRiskLevel": {
+      "enum": [
+        "LOW",
+        "MEDIUM_LOW",
+        "MEDIUM",
+        "MEDIUM_HIGH",
+        "HIGH"
+      ]
+    },
+    "allowedStrategies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowedVenues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cashReservePct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "maxVenueExposurePct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "maxAssetExposurePct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "autoExitEnabled": {
+      "type": "boolean"
+    }
+  }
+}

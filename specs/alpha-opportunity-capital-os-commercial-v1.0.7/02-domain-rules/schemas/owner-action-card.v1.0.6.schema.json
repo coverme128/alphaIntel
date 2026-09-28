@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "owner-action-card.v1.0.6.schema.json",
+  "type": "object",
+  "required": ["actionType", "displayTitle", "capitalUsd", "userRiskLabel", "evidenceMaturity", "primaryReasonCode", "executionAvailability"],
+  "properties": {
+    "actionType": {"enum": ["EXECUTE", "HOLD", "ROTATE", "EXIT", "KEEP_CASH"]},
+    "displayTitle": {"type": "string", "minLength": 1},
+    "capitalUsd": {"type": "number", "minimum": 0},
+    "expectedNetPnlUsd": {"type": ["number", "null"]},
+    "expectedNetPct": {"type": ["number", "null"]},
+    "modeledStressLossUsd": {"type": ["number", "null"]},
+    "emergencyExitCostUsd": {"type": ["number", "null"], "minimum": 0},
+    "liquidationDistancePct": {"type": ["number", "null"], "minimum": 0},
+    "userRiskLabel": {"type": "string", "minLength": 1},
+    "evidenceMaturity": {"enum": ["UNPROVEN", "REPLAY_POSITIVE", "PAPER_POSITIVE", "LIVE_POSITIVE", "ALPHA_VALIDATED"]},
+    "primaryReasonCode": {"type": "string", "minLength": 1},
+    "executionAvailability": {"enum": ["NONE", "GUIDED", "ASSISTED", "AUTO"]},
+    "opportunityId": {"type": ["string", "null"]},
+    "positionId": {"type": ["string", "null"]},
+    "analysisFactsRef": {"type": ["string", "null"]},
+    "expiresAt": {"type": ["string", "null"], "format": "date-time"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,28 @@
+contractId: PRODUCT_VALUE_POLICY_V1_0_5
+version: 1.0.5
+minimumEvidence:
+  classificationLiveDays: 90
+  stopProductLiveDays: 120
+  minValuationCoveragePct: 95.0
+riskValue:
+  minAnnualizedReturnGapPctPoints: -1.0
+  minRelativeDrawdownReductionPct: 30.0
+  stopProductMaxRelativeDrawdownReductionPct: 10.0
+automationValue:
+  returnGapLowerPctPoints: -1.0
+  returnGapUpperPctPoints: 1.0
+  minManualTimeReductionPct: 70.0
+  minAnnualizedHoursSaved: 50.0
+  minMeasuredOrOwnerLoggedCoveragePct: 60.0
+stopProduct:
+  maxAnnualizedExcessReturnPctPoints: 0.0
+  maxManualTimeReductionPct: 25.0
+  maxAnnualizedHoursSaved: 20.0
+ownerUtility:
+  ownerTimeValueUsdPerHour: null
+  riskMonetizationEnabled: false
+rules:
+  alphaSuccessSource: ALPHA_VALIDATED
+  expansionSource: EXPANSION_WORTHY
+  estimatedTimeCannotSolelyTriggerStop: true
+  aiMaySetPolicyCoefficients: false

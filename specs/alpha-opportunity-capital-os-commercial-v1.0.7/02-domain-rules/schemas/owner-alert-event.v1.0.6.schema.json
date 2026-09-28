@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "owner-alert-event.v1.0.6.schema.json",
+  "type": "object",
+  "required": ["eventType", "entityType", "entityId", "entityVersion", "reasonCode", "createdAt"],
+  "properties": {
+    "eventType": {"enum": ["OPPORTUNITY_READY", "EXIT_RECOMMENDED", "RISK_ACTION_REQUIRED", "EXECUTION_FAILURE"]},
+    "entityType": {"enum": ["OPPORTUNITY", "POSITION", "EXECUTION", "PORTFOLIO"]},
+    "entityId": {"type": "string", "minLength": 1},
+    "entityVersion": {"type": "string", "minLength": 1},
+    "reasonCode": {"type": "string", "minLength": 1},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "expiresAt": {"type": ["string", "null"], "format": "date-time"},
+    "actionCardRef": {"type": ["string", "null"]},
+    "dedupeKey": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

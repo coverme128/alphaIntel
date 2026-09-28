@@ -1,0 +1,28 @@
+{
+  "version": "1.0.1",
+  "units": {
+    "Pct": "percentage_points",
+    "Bps": "basis_points"
+  },
+  "common": {
+    "expectedNetPct": "theoreticalGrossPct - slippagePct - feesPct - borrowPct - transferOrRebalancePct - productSpecificCostPct - riskReservePct",
+    "capacityUsd": "0.95 * min(all_leg_depth_capacity, balance_margin_capacity, portfolio_limit_capacity, strategy_cap)"
+  },
+  "basisCashCarry": {
+    "grossBasisPct": "(futureBidTop / spotAskTop - 1) * 100",
+    "executableBasisPct": "(futureBidVWAP / spotAskVWAP - 1) * 100",
+    "annualizedNetPct": "expectedNetPct * 365 / daysToExpiry"
+  },
+  "crossExchangeSpread": {
+    "grossSpreadPct": "(sellBidTop - buyAskTop) / buyAskTop * 100",
+    "executableSpreadPct": "(sellBidVWAP - buyAskVWAP) / buyAskVWAP * 100"
+  },
+  "fundingPositionCashflowRate": {
+    "SHORT": "+fundingRate",
+    "LONG": "-fundingRate"
+  },
+  "idleYield": {
+    "aprTermReturnPct": "aprPct * termDays / 365",
+    "apyTermReturnPct": "((1 + apyPct/100) ** (termDays/365) - 1) * 100"
+  }
+}

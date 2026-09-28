@@ -1,0 +1,23 @@
+policyVersion: allocation-v1.0.1
+defaultsPct:
+  cashReserve: 15
+  maxSingleOpportunity: 10
+  maxStrategyFamily: 35
+  maxVenue: 40
+  maxCanonicalAsset: 40
+  maxSettlementStablecoin: 80
+  maxCorrelationGroup: 40
+riskMultiplier:
+  LOW: 1.0
+  MEDIUM_LOW: 0.85
+  MEDIUM: 0.65
+  MEDIUM_HIGH: 0.4
+  HIGH: 0.0
+capitalDayFloor:
+  FUNDING_NEUTRAL: 0.5
+  CROSS_EXCHANGE_FUNDING: 0.5
+  CROSS_EXCHANGE_SPREAD: 0.25
+  IDLE_CAPITAL_YIELD: 1.0
+allocationIncrementPctOfEquity: 1.0
+defaultExecutionFactorWithoutLiveEvidence: 0.7
+targetSlicePctOfEquity: 10

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PortfolioRecommendation",
+  "type": "object",
+  "required": [
+    "id",
+    "generatedAt",
+    "mode",
+    "portfolioEquityUsd",
+    "currentAllocation",
+    "targetAllocation",
+    "moves",
+    "riskAfter",
+    "expectedMetrics",
+    "expiresAt",
+    "policyVersion"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "mode": {
+      "enum": [
+        "OFF",
+        "ADVISORY",
+        "AUTO_REBALANCE"
+      ]
+    },
+    "portfolioEquityUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "currentAllocation": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "targetAllocation": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "moves": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "expectedMetrics": {
+      "type": "object",
+      "required": [
+        "expectedPlanPnlUsd",
+        "expectedPortfolioEquityImpactPct",
+        "capitalDays",
+        "capitalDayExpectedReturnPct",
+        "simpleAnnualizedComparisonPct",
+        "comparisonOnly"
+      ],
+      "properties": {
+        "expectedPlanPnlUsd": {
+          "type": "number"
+        },
+        "expectedPortfolioEquityImpactPct": {
+          "type": "number"
+        },
+        "capitalDays": {
+          "type": "number",
+          "minimum": 0
+        },
+        "capitalDayExpectedReturnPct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "simpleAnnualizedComparisonPct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "comparisonOnly": {
+          "const": true
+        }
+      }
+    },
+    "expectedIncrementalNetPct": {
+      "type": "number"
+    },
+    "expectedTurnoverPct": {
+      "type": "number",
+      "minimum": 0
+    },
+    "riskAfter": {
+      "type": "object"
+    },
+    "policyVersion": {
+      "type": "string"
+    },
+    "calculationFactIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "traceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,123 @@
+registryVersion: 1.0.1
+statusPolicy: ALL_DELIVERED_AS_DRAFT_UNTIL_PROMOTION
+units:
+  Pct: percentage_points
+  Bps: basis_points
+strategies:
+- id: funding-neutral
+  version: 1.0.1
+  family: FUNDING_NEUTRAL
+  status: DRAFT
+  venues:
+  - OKX
+  - BINANCE
+  - BYBIT
+  freshness:
+    orderBookMs: 1500
+    fundingMs: 120000
+    privateAccountMs: 3000
+  qualification:
+    minExpectedNetPct: 0.08
+    minCapacityUsd: 5000
+    maxEntrySlippageBps: 8
+    minPositivePersistence: 0.67
+    maxAbsEntryBasisPct: 0.75
+    maxDeltaMismatchPct: 0.5
+  holding:
+    targetFundingSettlements: 3
+    minHours: 8
+    maxInitialHours: 24
+    maxTotalHours: 48
+  reserves:
+    basisAdverseFallbackPct: 0.02
+  exit:
+    minContinuationNetPct: 0.02
+    fundingNonPositiveObservations: 2
+    fundingObservationSpanMin: 5
+    maxAdverseBasisWideningPct: 0.75
+- id: basis-cash-carry
+  version: 1.0.1
+  family: BASIS_CASH_CARRY
+  status: DRAFT
+  venues:
+  - OKX
+  - BINANCE
+  - BYBIT
+  freshness:
+    orderBookMs: 2000
+    instrumentMs: 3600000
+    privateAccountMs: 3000
+  qualification:
+    minExpectedNetPct: 0.5
+    minAnnualizedNetPct: 8.0
+    minDaysToExpiry: 7
+    maxDaysToExpiry: 180
+    minCapacityUsd: 5000
+    maxEntrySlippageBps: 10
+  exit:
+    earlyRealizationFraction: 0.8
+    remainingAnnualizedFloorPct: 6.0
+- id: cross-exchange-funding
+  version: 1.0.1
+  family: CROSS_EXCHANGE_FUNDING
+  status: DRAFT
+  venues:
+  - OKX
+  - BINANCE
+  - BYBIT
+  - HYPERLIQUID
+  freshness:
+    orderBookMs: 2000
+    fundingMs: 120000
+    privateAccountMs: 3000
+  qualification:
+    minExpectedNetPct: 0.1
+    minCapacityUsd: 5000
+    maxEntrySlippageBps: 10
+    maxCrossVenuePremiumPct: 0.5
+    maxDeltaMismatchPct: 0.5
+    minScheduledFundingEvents: 2
+  holding:
+    plannedHours: 24
+    maxTotalHours: 48
+  reserves:
+    premiumDivergenceFallbackPct: 0.02
+  exit:
+    minNext8hContinuationNetPct: 0.02
+    maxPremiumDivergencePct: 0.75
+- id: cross-exchange-spread
+  version: 1.0.1
+  family: CROSS_EXCHANGE_SPREAD
+  status: DRAFT
+  venues:
+  - OKX
+  - BINANCE
+  - BYBIT
+  - HYPERLIQUID
+  freshness:
+    cexPairOrderBookMs: 750
+    chainIncludedOrderBookMs: 1500
+    privateAccountMs: 2000
+  qualification:
+    minExpectedNetPct: 0.06
+    minCapacityUsd: 2000
+    maxPerLegSlippageBps: 5
+  reserves:
+    rebalanceFallbackPct: 0.02
+- id: idle-capital-yield
+  version: 1.0.1
+  family: IDLE_CAPITAL_YIELD
+  status: DRAFT
+  venues:
+  - OKX
+  - BINANCE
+  - BYBIT
+  qualification:
+    minIncrementalAnnualizedPctPoints: 2.0
+    minIncrementalHoldingPeriodPct: 0.05
+    maxLockDays: 7
+    maxRedemptionHours: 24
+    allowedStablecoinRiskTiers:
+    - A
+    - B
+  liveModeCeiling: ASSISTED

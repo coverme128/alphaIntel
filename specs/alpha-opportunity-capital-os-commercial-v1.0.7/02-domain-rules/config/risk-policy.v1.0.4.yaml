@@ -1,0 +1,63 @@
+policyVersion: risk-v1.0.4
+levels:
+  LOW: [0, 20]
+  MEDIUM_LOW: [20, 35]
+  MEDIUM: [35, 50]
+  MEDIUM_HIGH: [50, 70]
+  HIGH: [70, 100]
+weights:
+  marketBasis: 15
+  funding: 15
+  execution: 20
+  liquidity: 15
+  venue: 10
+  settlementAsset: 5
+  margin: 5
+  concentration: 5
+  dataFreshness: 5
+  operational: 5
+applicability:
+  FUNDING_NEUTRAL:
+    always: [marketBasis, funding, execution, liquidity, venue, settlementAsset, margin, concentration, dataFreshness, operational]
+  BASIS_CASH_CARRY:
+    always: [marketBasis, execution, liquidity, venue, settlementAsset, margin, concentration, dataFreshness, operational]
+  CROSS_EXCHANGE_FUNDING:
+    always: [marketBasis, funding, execution, liquidity, venue, settlementAsset, margin, concentration, dataFreshness, operational]
+  CROSS_EXCHANGE_SPREAD:
+    always: [marketBasis, execution, liquidity, venue, settlementAsset, concentration, dataFreshness, operational]
+    conditional:
+      margin: ANY_LEG_IS_MARGINED_OR_DERIVATIVE
+  IDLE_CAPITAL_YIELD:
+    always: [liquidity, venue, settlementAsset, concentration, dataFreshness, operational]
+tierScores:
+  A: 10
+  B: 35
+  C: 65
+  D: BLOCK
+  UNREVIEWED: BLOCK
+  UNKNOWN_LIVE: BLOCK
+margin:
+  stressMovePct: 5.0
+  minMaintenanceCoverageLive: 1.25
+  hardBlockLiquidationDistancePct: 2.0
+liveDefaults:
+  maxEffectiveLeverage: 1.5
+  maxDailyRealizedLossPct: 1.0
+  maxRolling7DayLossPct: 3.0
+  maxPortfolioDrawdownPct: 5.0
+  onBreach: DISABLE_NEW_AUTO_ENTRIES
+hardBlocks:
+  - stale_required_input
+  - stale_private_state
+  - unreviewed_or_unknown_live_venue_risk_tier
+  - unreviewed_or_unknown_live_settlement_asset_risk_tier
+  - capacity_below_order
+  - portfolio_limit_breach
+  - critical_connector_degradation
+  - kill_switch_active
+  - execution_lock_conflict
+  - insufficient_balance_or_margin
+  - margin_stress_buffer_failure
+  - liquidation_distance_hard_block
+  - instrument_not_active
+  - api_permission_policy_failure

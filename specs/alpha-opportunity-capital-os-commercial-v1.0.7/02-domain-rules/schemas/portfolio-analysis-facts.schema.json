@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PortfolioAnalysisFacts",
+  "type": "object",
+  "required": [
+    "factsVersion",
+    "portfolioRecommendationId",
+    "portfolioEquityUsd",
+    "currentAllocation",
+    "targetAllocation",
+    "expectedMetrics",
+    "riskAfter",
+    "moves",
+    "provenance"
+  ],
+  "properties": {
+    "factsVersion": {
+      "const": "portfolio-analysis-facts-v1.0.4"
+    },
+    "portfolioRecommendationId": {
+      "type": "string"
+    },
+    "portfolioEquityUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "currentAllocation": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "targetAllocation": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "expectedMetrics": {
+      "type": "object"
+    },
+    "riskAfter": {
+      "type": "object"
+    },
+    "moves": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "calculationFactIds",
+        "traceIds"
+      ],
+      "properties": {
+        "calculationFactIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "traceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "policyVersion": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

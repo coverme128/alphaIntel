@@ -1,0 +1,9 @@
+registryVersion: settlement-asset-risk-v1.0.4
+policy: HUMAN_APPROVED_VERSIONED_FACT
+note: >
+  Stablecoin/settlement-asset counterparty tiers are not inferred by AI and are
+  not frozen from stale assumptions. Owner approval is required before live use.
+assets:
+  USDT: {tier: UNREVIEWED, liveEligible: false, reviewedAt: null, reviewRef: null}
+  USDC: {tier: UNREVIEWED, liveEligible: false, reviewedAt: null, reviewRef: null}
+  USD: {tier: A, liveEligible: true, reviewedAt: SYSTEM_CANONICAL_CURRENCY, reviewRef: canonical-usd}

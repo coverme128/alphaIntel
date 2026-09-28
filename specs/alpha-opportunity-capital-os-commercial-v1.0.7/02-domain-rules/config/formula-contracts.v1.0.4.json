@@ -1,0 +1,51 @@
+{
+  "version": "1.0.4",
+  "units": {
+    "Pct": "percentage_points",
+    "Bps": "basis_points",
+    "Usd": "USD"
+  },
+  "common": {
+    "expectedNetPct": "grossPct - totalExpectedCostPct - totalReservePct",
+    "expectedPnlUsd": "notionalUsd * expectedNetPct / 100",
+    "simpleAnnualizedEquivalentPct": "holdingPeriodExpectedNetPct * 365 / (expectedHoldingSeconds/86400)",
+    "riskScore": "sum(score_i*weight_i for applicable_i) / sum(weight_i for applicable_i)",
+    "deltaMismatchPct": "abs(sum(deltaUsdApprox)) / targetStrategyNotionalUsd * 100"
+  },
+  "basisCashCarry": {
+    "grossBasisPct": "(futureBidTop / spotAskTop - 1) * 100",
+    "executableBasisPct": "(futureBidVWAP / spotAskVWAP - 1) * 100",
+    "simpleAnnualizedNetPct": "expectedNetPct * 365 / daysToExpiry"
+  },
+  "crossExchangeSpread": {
+    "grossSpreadPct": "(sellBidTop - buyAskTop) / buyAskTop * 100",
+    "executableSpreadPct": "(sellBidVWAP - buyAskVWAP) / buyAskVWAP * 100"
+  },
+  "fundingPositionCashflowRate": {
+    "SHORT": "+fundingRate",
+    "LONG": "-fundingRate"
+  },
+  "idleYield": {
+    "aprTermReturnPct": "aprPct * termDays / 365",
+    "apyTermReturnPct": "((1 + apyPct/100) ** (termDays/365) - 1) * 100"
+  },
+  "sizeEconomics": {
+    "marginalExpectedPnlUsd": "expectedPnlUsd(newSize) - expectedPnlUsd(oldSize)",
+    "marginalExpectedNetPct": "marginalExpectedPnlUsd / (newSize-oldSize) * 100"
+  },
+  "portfolio": {
+    "expectedPlanPnlUsd": "sum(expectedPnlUsd_i)",
+    "expectedPortfolioEquityImpactPct": "expectedPlanPnlUsd / portfolioEquityUsd * 100",
+    "capitalDays": "sum(allocatedNotionalUsd_i * effectiveLockDays_i)",
+    "capitalDayExpectedReturnPct": "expectedPlanPnlUsd / capitalDays * 100",
+    "simpleAnnualizedComparisonPct": "capitalDayExpectedReturnPct * 365"
+  },
+  "margin": {
+    "effectiveLeverage": "derivativeNotionalUsd / allocatedDerivativeEquityUsd",
+    "maintenanceCoverage": "accountEquityUsd / maintenanceMarginUsd",
+    "marginBufferUsd": "accountEquityUsd - maintenanceMarginUsd - pendingFeeReserveUsd",
+    "liquidationDistancePct": "abs(liquidationPrice-markPrice)/markPrice*100",
+    "stressLossUsd": "abs(derivativeDeltaUsd)*stressMovePct/100",
+    "postStressMarginBufferUsd": "marginBufferUsd-stressLossUsd"
+  }
+}

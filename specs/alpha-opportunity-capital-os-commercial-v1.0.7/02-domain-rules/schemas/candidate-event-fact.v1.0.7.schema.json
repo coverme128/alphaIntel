@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "candidate-event-fact.v1.0.7.schema.json",
+  "title": "Candidate Official Event Fact v1.0.7",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["candidateEventId", "venue", "eventType", "sourceType", "sourceRef", "extractedAt", "validationStatus"],
+  "properties": {
+    "candidateEventId": {"type": "string", "minLength": 1},
+    "venue": {"type": "string", "minLength": 1},
+    "symbol": {"type": ["string", "null"]},
+    "eventType": {
+      "enum": [
+        "DELISTING",
+        "TRADING_SUSPENSION",
+        "TRADING_RESUME",
+        "FUNDING_INTERVAL_CHANGE",
+        "FUNDING_RULE_CHANGE",
+        "CONTRACT_SPEC_CHANGE",
+        "SETTLEMENT_RULE_CHANGE",
+        "MARGIN_RULE_CHANGE",
+        "SERVICE_MAINTENANCE",
+        "SERVICE_DEGRADATION",
+        "TRANSFER_AVAILABILITY_CHANGE"
+      ]
+    },
+    "effectiveAt": {"type": ["string", "null"], "format": "date-time"},
+    "sourceType": {"const": "OFFICIAL_VENUE_NOTICE"},
+    "sourceRef": {"type": "string", "minLength": 1},
+    "extractedAt": {"type": "string", "format": "date-time"},
+    "extractedFields": {"type": "object", "additionalProperties": true},
+    "validationStatus": {"enum": ["CANDIDATE", "VALIDATED", "REJECTED", "REVIEW_REQUIRED"]},
+    "validationReasons": {"type": "array", "items": {"type": "string"}}
+  }
+}

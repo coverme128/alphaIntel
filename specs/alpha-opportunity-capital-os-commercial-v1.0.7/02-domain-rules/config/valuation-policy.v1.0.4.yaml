@@ -1,0 +1,13 @@
+policyVersion: valuation-v1.0.4
+canonicalCurrency: USD
+freshnessMs:
+  liquidAsset: 5000
+  stablecoin: 5000
+sourceHierarchy:
+  - APPROVED_CONSOLIDATED_INDEX
+  - MEDIAN_TWO_OR_MORE_APPROVED_FRESH_VENUE_MIDS
+  - APPROVED_SINGLE_VENUE_MID_IF_EXPLICITLY_ALLOWED
+singleSourceFallbackLiveDefault: false
+unvaluedMaterialityPctOfNav: 0.10
+stablecoinPegAssumptionAllowed: false
+externalFlowBoundaryToleranceSeconds: 300

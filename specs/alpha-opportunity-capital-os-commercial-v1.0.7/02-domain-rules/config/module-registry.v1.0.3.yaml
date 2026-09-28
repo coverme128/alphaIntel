@@ -1,0 +1,31 @@
+registryVersion: module-registry-v1.0.3
+modules:
+- id: CARRY
+  implementationStatus: CONTRACT_READY
+  economicStatus: UNPROVEN
+  executionCeiling: DISABLED
+  allocationEligibility: DISABLED
+  strategyFamilies:
+  - FUNDING_NEUTRAL
+  - BASIS_CASH_CARRY
+  - CROSS_EXCHANGE_FUNDING
+  - CROSS_EXCHANGE_SPREAD
+- id: YIELD
+  implementationStatus: CONTRACT_READY
+  economicStatus: UNPROVEN
+  executionCeiling: DISABLED
+  allocationEligibility: DISABLED
+  strategyFamilies:
+  - IDLE_CAPITAL_YIELD
+- id: STRUCTURED
+  implementationStatus: CONTRACT_READY
+  economicStatus: UNPROVEN
+  executionCeiling: DISABLED
+  allocationEligibility: DISABLED
+  strategyFamilies: []
+- id: OPTIONS
+  implementationStatus: CONTRACT_READY
+  economicStatus: UNPROVEN
+  executionCeiling: DISABLED
+  allocationEligibility: DISABLED
+  strategyFamilies: []

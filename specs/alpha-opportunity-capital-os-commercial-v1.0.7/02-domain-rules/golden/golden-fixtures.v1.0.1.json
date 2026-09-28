@@ -1,0 +1,183 @@
+{
+  "version": "1.0.1",
+  "units": {
+    "Pct": "percentage_points"
+  },
+  "fixtures": [
+    {
+      "id": "FN_POSITIVE_001",
+      "strategy": "FUNDING_NEUTRAL",
+      "inputs": {
+        "expectedFundingPct": 0.18,
+        "feesPct": 0.04,
+        "slippagePct": 0.02,
+        "basisAdverseReservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3
+      },
+      "expected": {
+        "expectedNetPct": 0.1,
+        "qualified": true
+      }
+    },
+    {
+      "id": "FN_COST_FAIL_002",
+      "strategy": "FUNDING_NEUTRAL",
+      "inputs": {
+        "expectedFundingPct": 0.12,
+        "feesPct": 0.05,
+        "slippagePct": 0.03,
+        "basisAdverseReservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3
+      },
+      "expected": {
+        "expectedNetPct": 0.02,
+        "qualified": false
+      }
+    },
+    {
+      "id": "BASIS_POSITIVE_001",
+      "strategy": "BASIS_CASH_CARRY",
+      "inputs": {
+        "spotAskTop": 100.0,
+        "futureBidTop": 103.0,
+        "slippagePct": 0.08,
+        "feesPct": 0.12,
+        "capitalBorrowCostPct": 0.3,
+        "exitSettlementCostPct": 0.02,
+        "daysToExpiry": 90,
+        "capacityUsd": 50000
+      },
+      "expected": {
+        "grossBasisPct": 3.0,
+        "expectedNetPct": 2.48,
+        "annualizedNetPct": 10.0577777778,
+        "qualified": true
+      }
+    },
+    {
+      "id": "BASIS_ANNUALIZED_FAIL_002",
+      "strategy": "BASIS_CASH_CARRY",
+      "inputs": {
+        "grossBasisPct": 1.0,
+        "slippagePct": 0.05,
+        "feesPct": 0.1,
+        "capitalBorrowCostPct": 0.1,
+        "exitSettlementCostPct": 0.05,
+        "daysToExpiry": 90,
+        "capacityUsd": 50000
+      },
+      "expected": {
+        "expectedNetPct": 0.7,
+        "annualizedNetPct": 2.8388888889,
+        "qualified": false
+      }
+    },
+    {
+      "id": "XCF_POSITIVE_001",
+      "strategy": "CROSS_EXCHANGE_FUNDING",
+      "inputs": {
+        "expectedFundingDifferentialPct": 0.24,
+        "feesPct": 0.08,
+        "slippagePct": 0.02,
+        "premiumDivergenceReservePct": 0.02,
+        "capacityUsd": 15000,
+        "scheduledFundingEvents": 4,
+        "crossVenuePremiumPct": 0.2
+      },
+      "expected": {
+        "expectedNetPct": 0.12,
+        "qualified": true
+      }
+    },
+    {
+      "id": "XCF_EVENT_FAIL_002",
+      "strategy": "CROSS_EXCHANGE_FUNDING",
+      "inputs": {
+        "expectedFundingDifferentialPct": 0.3,
+        "feesPct": 0.08,
+        "slippagePct": 0.02,
+        "premiumDivergenceReservePct": 0.02,
+        "capacityUsd": 15000,
+        "scheduledFundingEvents": 1,
+        "crossVenuePremiumPct": 0.2
+      },
+      "expected": {
+        "expectedNetPct": 0.18,
+        "qualified": false
+      }
+    },
+    {
+      "id": "SPREAD_POSITIVE_001",
+      "strategy": "CROSS_EXCHANGE_SPREAD",
+      "inputs": {
+        "grossSpreadPct": 0.18,
+        "slippagePct": 0.03,
+        "feesPct": 0.06,
+        "rebalanceReservePct": 0.02,
+        "capacityUsd": 10000
+      },
+      "expected": {
+        "expectedNetPct": 0.07,
+        "qualified": true
+      }
+    },
+    {
+      "id": "SPREAD_COST_FAIL_002",
+      "strategy": "CROSS_EXCHANGE_SPREAD",
+      "inputs": {
+        "grossSpreadPct": 0.12,
+        "slippagePct": 0.03,
+        "feesPct": 0.06,
+        "rebalanceReservePct": 0.02,
+        "capacityUsd": 10000
+      },
+      "expected": {
+        "expectedNetPct": 0.01,
+        "qualified": false
+      }
+    },
+    {
+      "id": "YIELD_POSITIVE_001",
+      "strategy": "IDLE_CAPITAL_YIELD",
+      "inputs": {
+        "quoteType": "APR",
+        "productAprPct": 8.0,
+        "baselineAprPct": 4.0,
+        "termDays": 30,
+        "feesPct": 0.02,
+        "annualizedIncrementalPctPoints": 4.0,
+        "lockDays": 0,
+        "redemptionHours": 2,
+        "riskTier": "A"
+      },
+      "expected": {
+        "productTermReturnPct": 0.6575342466,
+        "baselineTermReturnPct": 0.3287671233,
+        "incrementalNetPct": 0.3087671233,
+        "qualified": true
+      }
+    },
+    {
+      "id": "YIELD_LOCK_FAIL_002",
+      "strategy": "IDLE_CAPITAL_YIELD",
+      "inputs": {
+        "quoteType": "APR",
+        "productAprPct": 12.0,
+        "baselineAprPct": 4.0,
+        "termDays": 30,
+        "feesPct": 0.01,
+        "annualizedIncrementalPctPoints": 8.0,
+        "lockDays": 30,
+        "redemptionHours": 720,
+        "riskTier": "A"
+      },
+      "expected": {
+        "qualified": false
+      }
+    }
+  ]
+}

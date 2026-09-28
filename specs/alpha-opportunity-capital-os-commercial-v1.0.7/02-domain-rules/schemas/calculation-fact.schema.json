@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CanonicalCalculationFact",
+  "type": "object",
+  "required": [
+    "factId",
+    "metric",
+    "value",
+    "unit",
+    "quality",
+    "computedAt"
+  ],
+  "properties": {
+    "factId": {
+      "type": "string"
+    },
+    "metric": {
+      "type": "string"
+    },
+    "value": {},
+    "unit": {
+      "type": "string"
+    },
+    "quality": {
+      "enum": [
+        "OBSERVED",
+        "DERIVED",
+        "MODELED",
+        "FALLBACK"
+      ]
+    },
+    "observedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "computedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "formulaId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "formulaVersion": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "inputFactIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "inputSnapshotHash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "configHash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

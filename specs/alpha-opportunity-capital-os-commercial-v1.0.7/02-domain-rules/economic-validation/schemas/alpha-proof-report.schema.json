@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alpha-proof-report.schema.json",
+  "title": "AlphaProofReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reportId",
+    "mode",
+    "periodStart",
+    "periodEnd",
+    "observationDays",
+    "economicStatus",
+    "portfolioTwrPct",
+    "benchmarkTwrPct",
+    "excessReturnPct",
+    "realizedNetPnlUsd",
+    "economicValueUsd",
+    "maxDrawdownPct",
+    "reconciliationPct",
+    "policyVersion",
+    "reportHash"
+  ],
+  "properties": {
+    "reportId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mode": {
+      "enum": [
+        "REPLAY",
+        "PAPER",
+        "LIVE"
+      ]
+    },
+    "periodStart": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "periodEnd": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "observationDays": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "economicStatus": {
+      "enum": [
+        "UNPROVEN",
+        "REPLAY_POSITIVE",
+        "PAPER_POSITIVE",
+        "LIVE_POSITIVE",
+        "ALPHA_VALIDATED",
+        "DO_NOT_EXPAND",
+        "INVALIDATED",
+        "EVIDENCE_INSUFFICIENT"
+      ]
+    },
+    "portfolioTwrPct": {
+      "type": "number"
+    },
+    "benchmarkTwrPct": {
+      "type": "number"
+    },
+    "excessReturnPct": {
+      "type": "number"
+    },
+    "annualizedExcessReturnPct": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "realizedNetPnlUsd": {
+      "type": "number"
+    },
+    "benchmarkPnlEquivalentUsd": {
+      "type": "number"
+    },
+    "runCostUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "economicValueUsd": {
+      "type": "number"
+    },
+    "valueToRunCostRatio": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "maxDrawdownPct": {
+      "type": "number",
+      "minimum": 0
+    },
+    "captureRatio": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "costDragPctOfGross": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "capitalUtilizationPct": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "largestExecutionProfitSharePct": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "topFiveProfitSharePct": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "reconciliationPct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "decision": {
+      "enum": [
+        "KEEP_SCOPE",
+        "DO_NOT_EXPAND",
+        "EXPANSION_WORTHY",
+        "STOP_TRADING",
+        "NONE"
+      ]
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "policyVersion": {
+      "type": "string"
+    },
+    "strategyConfigHashes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "benchmarkPolicyHash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dataCoverageWarnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reportHash": {
+      "type": "string",
+      "minLength": 16
+    }
+  }
+}

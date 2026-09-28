@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpportunityAnalysisFacts",
+  "type": "object",
+  "required": [
+    "factsVersion",
+    "opportunityId",
+    "strategyId",
+    "moduleId",
+    "returns",
+    "costs",
+    "capacity",
+    "risk",
+    "action",
+    "provenance"
+  ],
+  "properties": {
+    "factsVersion": {
+      "const": "opportunity-analysis-facts-v1.0.4"
+    },
+    "opportunityId": {
+      "type": "string"
+    },
+    "strategyId": {
+      "type": "string"
+    },
+    "moduleId": {
+      "enum": [
+        "CARRY",
+        "YIELD",
+        "STRUCTURED",
+        "OPTIONS"
+      ]
+    },
+    "returns": {
+      "type": "object",
+      "required": [
+        "holdingPeriodExpectedNetPct",
+        "expectedHoldingSeconds",
+        "repeatability"
+      ],
+      "properties": {
+        "grossHoldingPeriodPct": {
+          "type": "number"
+        },
+        "holdingPeriodExpectedNetPct": {
+          "type": "number"
+        },
+        "expectedHoldingSeconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "simpleAnnualizedEquivalentPct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "comparisonOnly": {
+          "type": "boolean"
+        },
+        "repeatability": {
+          "enum": [
+            "CONTRACTUAL_RECURRING",
+            "CONDITION_DEPENDENT",
+            "ONE_SHOT"
+          ]
+        }
+      }
+    },
+    "costs": {
+      "type": "object"
+    },
+    "capacity": {
+      "type": "object"
+    },
+    "risk": {
+      "type": "object"
+    },
+    "action": {
+      "type": "object"
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "calculationFactIds",
+        "traceIds"
+      ],
+      "properties": {
+        "calculationFactIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "traceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "strategyVersion": {
+          "type": "string"
+        },
+        "configHash": {
+          "type": "string"
+        },
+        "inputSnapshotHash": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

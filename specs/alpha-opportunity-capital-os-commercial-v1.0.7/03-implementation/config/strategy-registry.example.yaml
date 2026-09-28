@@ -1,0 +1,2 @@
+# DEPRECATED in v1.0.1
+# Runtime implementation MUST load ../../02-domain-rules/config/strategy-registry.v1.0.4.yaml

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CalculationTrace",
+  "type": "object",
+  "required": [
+    "traceId",
+    "subjectId",
+    "formulaId",
+    "formulaVersion",
+    "inputSnapshotHash",
+    "outputFactId",
+    "computedAt"
+  ],
+  "properties": {
+    "traceId": {
+      "type": "string"
+    },
+    "subjectId": {
+      "type": "string"
+    },
+    "formulaId": {
+      "type": "string"
+    },
+    "formulaVersion": {
+      "type": "string"
+    },
+    "expression": {
+      "type": "string"
+    },
+    "inputFactIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "inputSnapshotHash": {
+      "type": "string"
+    },
+    "configHash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "outputFactId": {
+      "type": "string"
+    },
+    "computedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

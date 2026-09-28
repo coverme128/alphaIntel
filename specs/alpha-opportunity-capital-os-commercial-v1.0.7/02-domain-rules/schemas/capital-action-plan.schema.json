@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CapitalActionPlan",
+  "type": "object",
+  "required": [
+    "id",
+    "portfolioRecommendationId",
+    "mode",
+    "actions",
+    "createdAt",
+    "expiresAt",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "portfolioRecommendationId": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "GUIDED",
+        "ASSISTED",
+        "AUTO"
+      ]
+    },
+    "status": {
+      "enum": [
+        "DRAFT",
+        "READY",
+        "STALE",
+        "BLOCKED",
+        "EXECUTING",
+        "COMPLETED",
+        "CANCELLED"
+      ]
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "HOLD",
+              "ALLOCATE_CASH",
+              "REDUCE",
+              "EXIT",
+              "ROTATE",
+              "MOVE_TO_YIELD",
+              "KEEP_CASH"
+            ]
+          },
+          "sourcePositionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "targetOpportunityId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notionalUsd": {
+            "type": "number",
+            "minimum": 0
+          },
+          "expectedIncrementalNetPct": {
+            "type": "number"
+          },
+          "reasonCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "policyVersion": {
+      "type": "string"
+    }
+  }
+}

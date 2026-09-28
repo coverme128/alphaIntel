@@ -1,0 +1,51 @@
+{
+  "source": "SYNTHETIC",
+  "splitAt": "2026-01-02T00:00:00.000Z",
+  "frames": [
+    {
+      "at": "2026-01-01T00:00:00.000Z",
+      "strategy": "FUNDING_NEUTRAL",
+      "inputs": {
+        "expectedFundingPct": 0.18,
+        "expectedCostPct": 0.06,
+        "reservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3,
+        "stale": false,
+        "hardBlock": false
+      },
+      "sourceSnapshotId": "golden-0"
+    },
+    {
+      "at": "2026-01-02T00:00:00.000Z",
+      "strategy": "FUNDING_NEUTRAL",
+      "inputs": {
+        "expectedFundingPct": 0.18,
+        "expectedCostPct": 0.06,
+        "reservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3,
+        "stale": false,
+        "hardBlock": false
+      },
+      "sourceSnapshotId": "golden-1"
+    },
+    {
+      "at": "2026-01-03T00:00:00.000Z",
+      "strategy": "FUNDING_NEUTRAL",
+      "inputs": {
+        "expectedFundingPct": 0.18,
+        "expectedCostPct": 0.06,
+        "reservePct": 0.02,
+        "capacityUsd": 20000,
+        "positivePersistence": 0.83,
+        "absEntryBasisPct": 0.3,
+        "stale": false,
+        "hardBlock": false
+      },
+      "sourceSnapshotId": "golden-2"
+    }
+  ]
+}

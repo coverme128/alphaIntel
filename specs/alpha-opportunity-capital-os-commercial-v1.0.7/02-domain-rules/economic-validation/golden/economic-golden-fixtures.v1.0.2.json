@@ -1,0 +1,91 @@
+{
+  "contractId": "ECONOMIC_GOLDENS_V1_0_2",
+  "fixtures": [
+    {
+      "id": "EV-001-alpha-positive-not-expansion-worthy",
+      "inputs": {
+        "startingNav": 100000,
+        "endingNavActualBeforeRunCost": 110000,
+        "endingNavBenchmark": 106000,
+        "runCostUsd": 1000,
+        "observationDays": 365
+      },
+      "expected": {
+        "excessValueBeforeRunCostUsd": 4000,
+        "economicValueUsd": 3000,
+        "excessReturnPct": 4.0,
+        "valueToRunCostRatio": 4.0,
+        "alphaThreshold3ppPass": true,
+        "expansionThreshold5ppPass": false
+      }
+    },
+    {
+      "id": "EV-002-expansion-worthy-economics",
+      "inputs": {
+        "startingNav": 100000,
+        "endingNavActualBeforeRunCost": 112000,
+        "endingNavBenchmark": 106000,
+        "runCostUsd": 1200,
+        "observationDays": 365
+      },
+      "expected": {
+        "excessValueBeforeRunCostUsd": 6000,
+        "economicValueUsd": 4800,
+        "excessReturnPct": 6.0,
+        "valueToRunCostRatio": 5.0,
+        "alphaThreshold3ppPass": true,
+        "expansionThreshold5ppPass": true
+      }
+    },
+    {
+      "id": "EV-003-positive-pnl-negative-alpha",
+      "inputs": {
+        "startingNav": 100000,
+        "endingNavActualBeforeRunCost": 104000,
+        "endingNavBenchmark": 106000,
+        "runCostUsd": 500,
+        "observationDays": 365
+      },
+      "expected": {
+        "excessValueBeforeRunCostUsd": -2000,
+        "economicValueUsd": -2500,
+        "excessReturnPct": -2.0,
+        "alphaThreshold3ppPass": false,
+        "expansionThreshold5ppPass": false
+      }
+    },
+    {
+      "id": "EV-004-run-cost-erases-product-value",
+      "inputs": {
+        "startingNav": 100000,
+        "endingNavActualBeforeRunCost": 108000,
+        "endingNavBenchmark": 104000,
+        "runCostUsd": 4500,
+        "observationDays": 365
+      },
+      "expected": {
+        "excessValueBeforeRunCostUsd": 4000,
+        "economicValueUsd": -500,
+        "excessReturnPct": 4.0,
+        "valueToRunCostRatio": 0.8888888889,
+        "alphaThreshold3ppPass": true,
+        "expansionThreshold5ppPass": false
+      }
+    },
+    {
+      "id": "EV-005-short-period-no-annualization",
+      "inputs": {
+        "startingNav": 100000,
+        "endingNavActualBeforeRunCost": 101000,
+        "endingNavBenchmark": 100500,
+        "runCostUsd": 100,
+        "observationDays": 20
+      },
+      "expected": {
+        "excessValueBeforeRunCostUsd": 500,
+        "economicValueUsd": 400,
+        "annualizationAllowed": false
+      }
+    }
+  ]
+}

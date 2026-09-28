@@ -1,0 +1,171 @@
+{
+  "fixtureVersion": "product-value-golden-v1.0.5",
+  "cases": [
+    {
+      "id": "PV-001-INSUFFICIENT",
+      "input": {
+        "liveDays": 60,
+        "valuationCoveragePct": 100,
+        "reconciled": true,
+        "runCostComplete": true,
+        "economicStatus": "UNPROVEN",
+        "annualizedReturnGapPctPoints": 0.0,
+        "systemMaxDrawdownPct": -2,
+        "benchmarkMaxDrawdownPct": -4,
+        "manualTimeReductionPct": 80,
+        "annualizedHoursSaved": 100,
+        "workloadEvidenceCoveragePct": 100
+      },
+      "expected": {
+        "valueClassification": "EVIDENCE_INSUFFICIENT",
+        "expansionDecision": "NOT_EVALUATED",
+        "survivalDecision": "EVIDENCE_INSUFFICIENT"
+      }
+    },
+    {
+      "id": "PV-002-ALPHA",
+      "input": {
+        "liveDays": 100,
+        "valuationCoveragePct": 100,
+        "reconciled": true,
+        "runCostComplete": true,
+        "economicStatus": "ALPHA_VALIDATED",
+        "expansionWorthy": false,
+        "annualizedReturnGapPctPoints": 4.0,
+        "systemMaxDrawdownPct": -3,
+        "benchmarkMaxDrawdownPct": -5,
+        "manualTimeReductionPct": 50,
+        "annualizedHoursSaved": 30,
+        "workloadEvidenceCoveragePct": 100,
+        "hardRiskBreaches": 0,
+        "severity1Incidents": 0
+      },
+      "expected": {
+        "valueClassification": "ALPHA_PRODUCT_SUCCESS",
+        "expansionDecision": "DO_NOT_EXPAND",
+        "survivalDecision": "CONTINUE"
+      }
+    },
+    {
+      "id": "PV-003-RISK",
+      "input": {
+        "liveDays": 100,
+        "valuationCoveragePct": 100,
+        "reconciled": true,
+        "runCostComplete": true,
+        "economicStatus": "LIVE_POSITIVE",
+        "annualizedReturnGapPctPoints": -0.5,
+        "systemMaxDrawdownPct": -2,
+        "benchmarkMaxDrawdownPct": -5,
+        "manualTimeReductionPct": 30,
+        "annualizedHoursSaved": 10,
+        "workloadEvidenceCoveragePct": 100,
+        "hardRiskBreaches": 0,
+        "severity1Incidents": 0
+      },
+      "expected": {
+        "relativeDrawdownReductionPct": 60.0,
+        "valueClassification": "RISK_CAPITAL_OS_VALUE",
+        "expansionDecision": "DO_NOT_EXPAND",
+        "survivalDecision": "KEEP_REDUCED_SCOPE"
+      }
+    },
+    {
+      "id": "PV-004-AUTOMATION",
+      "input": {
+        "liveDays": 100,
+        "valuationCoveragePct": 100,
+        "reconciled": true,
+        "runCostComplete": true,
+        "economicStatus": "LIVE_POSITIVE",
+        "annualizedReturnGapPctPoints": 0.2,
+        "systemMaxDrawdownPct": -4.8,
+        "benchmarkMaxDrawdownPct": -5,
+        "manualTimeReductionPct": 75,
+        "annualizedHoursSaved": 80,
+        "workloadEvidenceCoveragePct": 90,
+        "hardRiskBreaches": 0,
+        "severity1Incidents": 0
+      },
+      "expected": {
+        "relativeDrawdownReductionPct": 4.0,
+        "valueClassification": "AUTOMATION_VALUE_ONLY",
+        "expansionDecision": "DO_NOT_EXPAND",
+        "survivalDecision": "KEEP_REDUCED_SCOPE"
+      }
+    },
+    {
+      "id": "PV-005-NO-VALUE-BEFORE-STOP",
+      "input": {
+        "liveDays": 100,
+        "valuationCoveragePct": 100,
+        "reconciled": true,
+        "runCostComplete": true,
+        "economicStatus": "LIVE_POSITIVE",
+        "annualizedExcessReturnPctPoints": -0.5,
+        "annualizedReturnGapPctPoints": -1.5,
+        "systemMaxDrawdownPct": -4.8,
+        "benchmarkMaxDrawdownPct": -5,
+        "manualTimeReductionPct": 10,
+        "annualizedHoursSaved": 10,
+        "workloadEvidenceCoveragePct": 100,
+        "hardRiskBreaches": 0,
+        "severity1Incidents": 0
+      },
+      "expected": {
+        "valueClassification": "NO_MATERIAL_VALUE",
+        "expansionDecision": "DO_NOT_EXPAND",
+        "survivalDecision": "KEEP_REDUCED_SCOPE"
+      }
+    },
+    {
+      "id": "PV-006-STOP",
+      "input": {
+        "liveDays": 130,
+        "valuationCoveragePct": 100,
+        "reconciled": true,
+        "runCostComplete": true,
+        "economicStatus": "LIVE_POSITIVE",
+        "annualizedExcessReturnPctPoints": -0.5,
+        "annualizedReturnGapPctPoints": -1.5,
+        "systemMaxDrawdownPct": -4.8,
+        "benchmarkMaxDrawdownPct": -5,
+        "manualTimeReductionPct": 10,
+        "annualizedHoursSaved": 10,
+        "workloadEvidenceCoveragePct": 100,
+        "hardRiskBreaches": 0,
+        "severity1Incidents": 0
+      },
+      "expected": {
+        "relativeDrawdownReductionPct": 4.0,
+        "valueClassification": "NO_MATERIAL_VALUE",
+        "expansionDecision": "DO_NOT_EXPAND",
+        "survivalDecision": "STOP_PRODUCT"
+      }
+    },
+    {
+      "id": "PV-007-EXPAND",
+      "input": {
+        "liveDays": 150,
+        "valuationCoveragePct": 100,
+        "reconciled": true,
+        "runCostComplete": true,
+        "economicStatus": "ALPHA_VALIDATED",
+        "expansionWorthy": true,
+        "annualizedReturnGapPctPoints": 6,
+        "systemMaxDrawdownPct": -2,
+        "benchmarkMaxDrawdownPct": -5,
+        "manualTimeReductionPct": 80,
+        "annualizedHoursSaved": 80,
+        "workloadEvidenceCoveragePct": 100,
+        "hardRiskBreaches": 0,
+        "severity1Incidents": 0
+      },
+      "expected": {
+        "valueClassification": "ALPHA_PRODUCT_SUCCESS",
+        "expansionDecision": "EXPANSION_WORTHY",
+        "survivalDecision": "CONTINUE"
+      }
+    }
+  ]
+}

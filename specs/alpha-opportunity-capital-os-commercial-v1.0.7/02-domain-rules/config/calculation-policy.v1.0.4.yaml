@@ -1,0 +1,23 @@
+policyVersion: calculation-v1.0.4
+factsVersion: opportunity-analysis-facts-v1.0.4
+canonicalCurrency: USD
+sizeBandsUsd: [1000, 5000, 10000, 25000, 50000, 100000]
+capacityHaircutPct: 5
+return:
+  annualizedDisplay: AUXILIARY_COMPARISON_ONLY
+  headline: HOLDING_PERIOD_EXPECTED_NET
+costs:
+  separateReserves: true
+rebalanceEstimator:
+  rollingReconciledEvents: 30
+  minimumEvents: 10
+  percentile: 75
+risk:
+  normalizeApplicableWeightsOnly: true
+ai:
+  factsOnly: true
+  mayRecomputeTradingMetrics: false
+trace:
+  persistFormulaVersion: true
+  persistConfigHash: true
+  persistInputSnapshotHash: true

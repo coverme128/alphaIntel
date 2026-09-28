@@ -1,0 +1,15 @@
+registryVersion: correlation-group-v1.0.4
+rules:
+  - id: CANONICAL_ASSET
+    groupTemplate: "ASSET:{canonicalAsset}"
+    appliesTo: [SPOT, PERPETUAL, FUTURE, OPTION, STRUCTURED_PRODUCT]
+    description: All exposures to the same canonical underlying share an asset concentration group.
+  - id: SETTLEMENT_ASSET
+    groupTemplate: "SETTLEMENT:{settlementAsset}"
+    appliesTo: [ALL]
+    description: Settlement-asset concentration is tracked independently.
+  - id: STRATEGY_FAMILY
+    groupTemplate: "FAMILY:{strategyFamily}"
+    appliesTo: [ALL]
+    description: Strategy-family cap is applied independently of asset grouping.
+manualOverrides: []

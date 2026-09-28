@@ -1,0 +1,13 @@
+policyVersion: capital-rotation-v1.0.3
+defaultMode: ADVISORY
+minAbsoluteIncrementalNetPct: 0.05
+minRelativeUtilityImprovement: 0.20
+switchReserveBps: 2
+minTargetHoldElapsedFractionBeforeVoluntaryRotation: 0.25
+maxVoluntaryTurnoverPctOfEquityRolling24h: 25
+emergencyRiskReductionBypassesChurnGuards: true
+maxPrimaryRecommendationsOnToday: 3
+requireQualifiedFreshTarget: true
+requireExitEligibleSource: true
+requirePostTradePortfolioRiskPass: true
+allowCashAsBestAction: true

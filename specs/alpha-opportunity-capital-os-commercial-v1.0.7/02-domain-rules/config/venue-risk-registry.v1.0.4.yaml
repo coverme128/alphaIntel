@@ -1,0 +1,10 @@
+registryVersion: venue-risk-v1.0.4
+policy: HUMAN_APPROVED_VERSIONED_FACT
+note: >
+  This release does not invent counterparty safety ratings. Before ASSISTED/AUTO,
+  the owner/operator must approve a tier using current due-diligence evidence.
+venues:
+  OKX: {tier: UNREVIEWED, liveEligible: false, reviewedAt: null, reviewRef: null}
+  BINANCE: {tier: UNREVIEWED, liveEligible: false, reviewedAt: null, reviewRef: null}
+  BYBIT: {tier: UNREVIEWED, liveEligible: false, reviewedAt: null, reviewRef: null}
+  HYPERLIQUID: {tier: UNREVIEWED, liveEligible: false, reviewedAt: null, reviewRef: null}

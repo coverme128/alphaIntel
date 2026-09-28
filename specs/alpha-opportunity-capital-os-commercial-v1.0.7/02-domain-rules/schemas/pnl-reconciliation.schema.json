@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PnlReconciliation",
+  "type": "object",
+  "required": [
+    "positionId",
+    "allocatedCapitalUsd",
+    "expectedNetPnlUsd",
+    "components",
+    "realizedNetPnlUsd",
+    "valuation",
+    "status"
+  ],
+  "properties": {
+    "positionId": {
+      "type": "string"
+    },
+    "allocatedCapitalUsd": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "expectedNetPnlUsd": {
+      "type": "number"
+    },
+    "components": {
+      "type": "object",
+      "required": [
+        "pricePnlUsd",
+        "fundingPnlUsd",
+        "yieldPnlUsd",
+        "feePnlUsd",
+        "borrowPnlUsd",
+        "transferRebalancePnlUsd",
+        "otherPnlUsd"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "pricePnlUsd": {
+          "type": "number"
+        },
+        "fundingPnlUsd": {
+          "type": "number"
+        },
+        "yieldPnlUsd": {
+          "type": "number"
+        },
+        "feePnlUsd": {
+          "type": "number"
+        },
+        "borrowPnlUsd": {
+          "type": "number"
+        },
+        "transferRebalancePnlUsd": {
+          "type": "number"
+        },
+        "otherPnlUsd": {
+          "type": "number"
+        }
+      }
+    },
+    "realizedNetPnlUsd": {
+      "type": "number"
+    },
+    "realizedNetPct": {
+      "type": "number"
+    },
+    "valuation": {
+      "type": "object",
+      "required": [
+        "policyVersion",
+        "allMaterialAssetsValued"
+      ],
+      "properties": {
+        "policyVersion": {
+          "type": "string"
+        },
+        "allMaterialAssetsValued": {
+          "type": "boolean"
+        },
+        "conversionFacts": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "PENDING",
+        "PARTIAL",
+        "RECONCILED",
+        "EXCEPTION"
+      ]
+    },
+    "pnlErrorUsd": {
+      "type": "number"
+    },
+    "pnlErrorPctOfExpected": {
+      "type": "number"
+    },
+    "calculationFactIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "traceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

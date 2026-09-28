@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "capital-inventory-plan.v1.0.6.schema.json",
+  "type": "object",
+  "required": ["asOf", "items"],
+  "properties": {
+    "asOf": {"type": "string", "format": "date-time"},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["venue", "readyCapitalUsd", "reservedCapitalUsd", "excessCapitalUsd", "shortfallUsd", "blockedCapitalUsd", "inventoryStatus"],
+        "properties": {
+          "venue": {"type": "string", "minLength": 1},
+          "accountRef": {"type": ["string", "null"]},
+          "readyCapitalUsd": {"type": "number", "minimum": 0},
+          "reservedCapitalUsd": {"type": "number", "minimum": 0},
+          "excessCapitalUsd": {"type": "number", "minimum": 0},
+          "shortfallUsd": {"type": "number", "minimum": 0},
+          "blockedCapitalUsd": {"type": "number", "minimum": 0},
+          "inventoryStatus": {"enum": ["READY", "SHORTFALL", "EXCESS", "BLOCKED", "UNKNOWN"]},
+          "reasonCodes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

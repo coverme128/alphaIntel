@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EconomicsBySize",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "required": [
+      "notionalUsd",
+      "expectedNetPct",
+      "expectedPnlUsd",
+      "qualifiedAtSize"
+    ],
+    "properties": {
+      "notionalUsd": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "grossPct": {
+        "type": "number"
+      },
+      "executableGrossPct": {
+        "type": "number"
+      },
+      "slippagePct": {
+        "type": "number"
+      },
+      "totalExpectedCostPct": {
+        "type": "number"
+      },
+      "totalReservePct": {
+        "type": "number"
+      },
+      "expectedNetPct": {
+        "type": "number"
+      },
+      "expectedPnlUsd": {
+        "type": "number"
+      },
+      "qualifiedAtSize": {
+        "type": "boolean"
+      },
+      "failureReasonCodes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

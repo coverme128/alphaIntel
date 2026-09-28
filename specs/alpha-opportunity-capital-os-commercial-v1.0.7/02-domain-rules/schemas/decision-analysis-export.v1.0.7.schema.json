@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "decision-analysis-export.v1.0.7.schema.json",
+  "title": "Decision & Analysis Export v1.0.7",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metadata",
+    "portfolio",
+    "capitalActions",
+    "opportunities",
+    "positions",
+    "performance",
+    "riskFacts",
+    "calculationFacts",
+    "calculationTraces",
+    "productValue"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schemaVersion", "productVersion", "generatedAt", "valuationCurrency"],
+      "properties": {
+        "schemaVersion": {"const": "1.0.7"},
+        "productVersion": {"type": "string"},
+        "generatedAt": {"type": "string", "format": "date-time"},
+        "valuationCurrency": {"type": "string", "minLength": 1},
+        "windowStart": {"type": ["string", "null"], "format": "date-time"},
+        "windowEnd": {"type": ["string", "null"], "format": "date-time"},
+        "economicStatus": {"type": ["string", "null"]},
+        "productValueStatus": {"type": ["string", "null"]},
+        "configVersions": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    },
+    "portfolio": {"type": "object", "additionalProperties": true},
+    "capitalActions": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+    "opportunities": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+    "positions": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+    "performance": {"type": "object", "additionalProperties": true},
+    "riskFacts": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+    "calculationFacts": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+    "calculationTraces": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+    "productValue": {"type": "object", "additionalProperties": true},
+    "eventFacts": {"type": "array", "items": {"type": "object", "additionalProperties": true}}
+  }
+}

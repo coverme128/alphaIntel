@@ -1,0 +1,862 @@
+{
+  "bundle": "alpha-opportunity-capital-os-commercial-v1.0.7",
+  "version": "1.0.7",
+  "fileCount": 171,
+  "files": [
+    {
+      "path": "01-product/AI-MODES-AND-EXPORT-v1.0.7.md",
+      "bytes": 1878,
+      "sha256": "cf879ecd269a7bcffad493ba6e2ca16a46f6064dfd25ac034e42947308dfc17d"
+    },
+    {
+      "path": "01-product/ALERTS-AND-CAPITAL-INVENTORY-v1.0.6.md",
+      "bytes": 2653,
+      "sha256": "cbef107c6e8cfe77ed0c753144722e1d1b2bb9f9f6c856fe79e3eb8851ab42e4"
+    },
+    {
+      "path": "01-product/CALCULATION-EXPLAINABILITY-v1.0.4.md",
+      "bytes": 923,
+      "sha256": "ee1acab51d559267b62e2e04fc68af568fa8e6dcbd1b04b54cf46e5f0c7caad2"
+    },
+    {
+      "path": "01-product/CAPITAL-ACTION-PLAN-v1.0.3.md",
+      "bytes": 1044,
+      "sha256": "3cdf3d632784b8ba6378da2b891743915152732e6f08b6c0a444044bf62eb866"
+    },
+    {
+      "path": "01-product/COMMERCIAL-MODEL.md",
+      "bytes": 696,
+      "sha256": "f5c3fc5e0c51448b3159925f73c79c5001c6ea9464ef0f5545c40ad1929bc76f"
+    },
+    {
+      "path": "01-product/DEPLOYMENT-PROFILES.md",
+      "bytes": 877,
+      "sha256": "eed3d8a9ae9973b7cd39249162549558cafb3d73e447e077d889a3c1452862b6"
+    },
+    {
+      "path": "01-product/MODULE-ACCESS-AND-MODES-v1.0.3.md",
+      "bytes": 1073,
+      "sha256": "957b2686b8004c678d8653c9f4f369bbe344d973feab87e7f5b51f4f49d71670"
+    },
+    {
+      "path": "01-product/OFFICIAL-NOTICE-SCOPE-v1.0.7.md",
+      "bytes": 1326,
+      "sha256": "11b5877bab7384b04055c444703d3069d785de90ca094479ef81812be567d533"
+    },
+    {
+      "path": "01-product/PERFORMANCE-VALUE-VIEW-v1.0.5.md",
+      "bytes": 1478,
+      "sha256": "6906eb9d639351b3e786bf65a970532affcd75f32d2da38eff00e515b00b553b"
+    },
+    {
+      "path": "01-product/PERSONAL-UX-CLOSURE-v1.0.6.md",
+      "bytes": 4810,
+      "sha256": "b98f85bbb8481f6046c8de29d5b885f6dd6e31ec87f217ff7c9ed96f134bed86"
+    },
+    {
+      "path": "01-product/PRODUCT-ARCHITECTURE-v1.0.3.md",
+      "bytes": 1782,
+      "sha256": "4662d5be1f65df227a275104eaa46d00d7d1d418ed09206d877624cd358f4ffd"
+    },
+    {
+      "path": "01-product/PRODUCT-SPEC.md",
+      "bytes": 3279,
+      "sha256": "fe743f9e92b2c419d93b0f0e009fbdcff0d78d32443d30dbbc48decf57a5a261"
+    },
+    {
+      "path": "01-product/PRODUCT-VALUE-AND-SURVIVAL-v1.0.5.md",
+      "bytes": 1843,
+      "sha256": "644f78d602c76919ccbbb04ba492e90e6140fa87aad3e59c2f6d7bbe5cd4c56e"
+    },
+    {
+      "path": "01-product/UNIFIED-OPPORTUNITY-FEED-v1.0.3.md",
+      "bytes": 1232,
+      "sha256": "45f424f61b03720b0c2696b1e0e9afd7fdde4653bca86e392b67c4407c8c7e53"
+    },
+    {
+      "path": "01-product/USER-JOURNEYS.md",
+      "bytes": 4361,
+      "sha256": "43846d52032f7830eb30556a04b4ea53177b21a677ddf7265fae42323dc85723"
+    },
+    {
+      "path": "01-product/UX-PRESENTATION.md",
+      "bytes": 2617,
+      "sha256": "e3bee1bd029d1a89f821741af65d1440a76fc1c152268dbbbeaa7c3cf0fb8e85"
+    },
+    {
+      "path": "02-domain-rules/AI-CONTRACT.md",
+      "bytes": 2089,
+      "sha256": "93a6d5f4afd3c99d04b9d13982181b628ee5051cf3fce1c5d58d843bacd45562"
+    },
+    {
+      "path": "02-domain-rules/CALCULATION-FACTS-CLOSURE-v1.0.4.md",
+      "bytes": 2697,
+      "sha256": "b2539c820373f4738d00a0a894ad1891f884dd182c3c87f5dee1c6712e79cff2"
+    },
+    {
+      "path": "02-domain-rules/CALCULATION-RULES-INDEX-v1.0.4.md",
+      "bytes": 2757,
+      "sha256": "09da864736effe15624688d2b296ff874d293f38e43ff57ef777a81158a1e3e8"
+    },
+    {
+      "path": "02-domain-rules/CAPITAL-ALLOCATION.md",
+      "bytes": 1265,
+      "sha256": "b7829857bb4933849b55a640aef28be309c7ac76edfb6ee5d6f3a3105b457360"
+    },
+    {
+      "path": "02-domain-rules/CAPITAL-ROTATION-v1.0.3.md",
+      "bytes": 2609,
+      "sha256": "32b7fc9c4b2f5f25dccb4577d2feb6531896aa681f22c7ba9122244ad3b2b816"
+    },
+    {
+      "path": "02-domain-rules/DECISION-ANALYSIS-EXPORT-CONTRACT-v1.0.7.md",
+      "bytes": 1684,
+      "sha256": "3d067cca946e34a902a55183a357074355577857dd2f5ae9281bae51165dd5d9"
+    },
+    {
+      "path": "02-domain-rules/DOMAIN-RULES-COMPLETION-v1.0.1.md",
+      "bytes": 1459,
+      "sha256": "0ea35aebfaf88eea020eb62bba8bde0a4659243c38bbdcdaf1ccca37572fbbe6"
+    },
+    {
+      "path": "02-domain-rules/EXECUTION-RULES.md",
+      "bytes": 1402,
+      "sha256": "90060c5990a46c6c32e64f0e78125e03d0cdaaaa512e01348e9d406ddb2a10f5"
+    },
+    {
+      "path": "02-domain-rules/MODULE-PROMOTION-GATES-v1.0.3.md",
+      "bytes": 1224,
+      "sha256": "fe36d0a46804d618b3d267c0929ca7a503cffe64adc39d5ac6d6962d2ee86af9"
+    },
+    {
+      "path": "02-domain-rules/MODULE-REGISTRY-v1.0.3.md",
+      "bytes": 1186,
+      "sha256": "9a22b63b81e35fb2fa1f02cd90e0b700e25ce1d217b7a2c218d479abe8faed58"
+    },
+    {
+      "path": "02-domain-rules/OPPORTUNITY-TAXONOMY.md",
+      "bytes": 1338,
+      "sha256": "cd6681190832ca6f1ef01e118d23056bed84fc6dc9fde926b028c0c28cc16655"
+    },
+    {
+      "path": "02-domain-rules/QUALIFICATION-REASON-CODES-v1.0.4.md",
+      "bytes": 1878,
+      "sha256": "e76c37c972c759d32aedbda21d2a67dacc1d89a871b0edcbe23e4023fb90f83f"
+    },
+    {
+      "path": "02-domain-rules/RETURN-COST-CAPACITY.md",
+      "bytes": 1526,
+      "sha256": "f96acc34c3b23a97c564c8353066ed35317c04826c37b9ac4a7699cceb829349"
+    },
+    {
+      "path": "02-domain-rules/RISK-RULES.md",
+      "bytes": 1423,
+      "sha256": "e574c33f8b7950c5d1d81968e27246f839a3dea9ffed45ea6e2ff8520699b27f"
+    },
+    {
+      "path": "02-domain-rules/STRATEGY-REGISTRY.md",
+      "bytes": 750,
+      "sha256": "0c6ef8e036b9c9e29eaaee4392a8ea2592c25578cd64c27f88757e55fe2c8c3b"
+    },
+    {
+      "path": "02-domain-rules/STRUCTURED-OPTIONS-MODULE-CONTRACT-v1.0.3.md",
+      "bytes": 1568,
+      "sha256": "1924b03b559a9521c652f10d1e8b0b15b2d291e99db12d40b6b9773a56bdd21c"
+    },
+    {
+      "path": "02-domain-rules/STRUCTURED-PRODUCTS-EXPANSION.md",
+      "bytes": 1208,
+      "sha256": "1e8cb89175a2b725a6b90578ba79194cf06f69163e3fcf1c3babd5629f0bcb39"
+    },
+    {
+      "path": "02-domain-rules/config/README-v1.0.4.md",
+      "bytes": 551,
+      "sha256": "919da2d6c5a5895bf433267012ea54ac33ec17c3da884e9762d3498d8675e6fb"
+    },
+    {
+      "path": "02-domain-rules/config/allocation-policy.v1.0.1.yaml",
+      "bytes": 538,
+      "sha256": "2c56b14175165c31be5b50839c65ba8b6ce5870291e56b91303f95ef554d764a"
+    },
+    {
+      "path": "02-domain-rules/config/alpha-thesis-priority.v1.0.5.yaml",
+      "bytes": 606,
+      "sha256": "0d278c69075bb9b2a97270a8c92f280a6209deeadac6ae627f091c36c73ab2f2"
+    },
+    {
+      "path": "02-domain-rules/config/calculation-policy.v1.0.4.yaml",
+      "bytes": 596,
+      "sha256": "ef41bdf26801b5a35d9f009064040f9e3a40a4f4c779dc78decbdcab00e71d24"
+    },
+    {
+      "path": "02-domain-rules/config/capital-rotation-policy.v1.0.3.yaml",
+      "bytes": 474,
+      "sha256": "b5542bebd03b670eb8cc0c31766797db15f5b3322952b9e268567b14d994bed6"
+    },
+    {
+      "path": "02-domain-rules/config/correlation-group-registry.v1.0.4.yaml",
+      "bytes": 647,
+      "sha256": "843da893d4b1ac2eeb418ed6c5c2bf8ff98d9bb4b97bf93bb3608df79b3e6276"
+    },
+    {
+      "path": "02-domain-rules/config/formula-contracts.v1.0.1.json",
+      "bytes": 1025,
+      "sha256": "26b1b3517bed544d29b504f5bc06e7e41b437620f4f37499aad80093eef3ac1e"
+    },
+    {
+      "path": "02-domain-rules/config/formula-contracts.v1.0.4.json",
+      "bytes": 2243,
+      "sha256": "e72e043f65b34ccdaa8c8b8ca153543d0055222a4c6a76af92b6d59caed98740"
+    },
+    {
+      "path": "02-domain-rules/config/module-registry.v1.0.3.yaml",
+      "bytes": 823,
+      "sha256": "710906d0856f023b67ddb251263c3263b95dc3fb626a68e4de2415a7827b57ce"
+    },
+    {
+      "path": "02-domain-rules/config/risk-policy.v1.0.1.yaml",
+      "bytes": 918,
+      "sha256": "f108067d81f80c7f7d638a03b4dfda32f0f907dfbbf25b691cc72cdf568000b1"
+    },
+    {
+      "path": "02-domain-rules/config/risk-policy.v1.0.4.yaml",
+      "bytes": 1922,
+      "sha256": "0767ec4f730aa4a213ce9b217107dd07dd19d86eabcb7a7de8e2ad7ced3b9e02"
+    },
+    {
+      "path": "02-domain-rules/config/settlement-asset-risk-registry.v1.0.4.yaml",
+      "bytes": 529,
+      "sha256": "97a1e74803eab1648dddcaf4c0a928c91f5f0f757ba32f329cd7a002c5e40e6f"
+    },
+    {
+      "path": "02-domain-rules/config/strategy-registry.v1.0.1.yaml",
+      "bytes": 2652,
+      "sha256": "8abead2df25fe16eb04dc8f0462c6043facd3cd855e14a8bda41812c16a99a82"
+    },
+    {
+      "path": "02-domain-rules/config/strategy-registry.v1.0.4.yaml",
+      "bytes": 2652,
+      "sha256": "9589115c45857b95a0a6688a382a5ffe30c785b9e52732b6c2a3ccd64452243a"
+    },
+    {
+      "path": "02-domain-rules/config/valuation-policy.v1.0.4.yaml",
+      "bytes": 410,
+      "sha256": "2622990d9c0bc26b9c39971da3296c820409152555fa3061787605d654fabfba"
+    },
+    {
+      "path": "02-domain-rules/config/venue-risk-registry.v1.0.4.yaml",
+      "bytes": 592,
+      "sha256": "040360f63d0267423ae6a4594cb05cf273bf5f4408f823f5c9c2e1d7930e2ef6"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/ALPHA-PROOF-CONTRACT-v1.0.2.md",
+      "bytes": 2726,
+      "sha256": "ab12dcfc11e647e437337f1b4e927b264f76d5c64c3b4507781dd1ae5913e93a"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/BENCHMARK-POLICY-v1.0.2.md",
+      "bytes": 1860,
+      "sha256": "03d57f981096ebddb140f2cd4bccf3dc96a1b13ef77a78c7d19e6b979583bf31"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/COST-ATTRIBUTION-v1.0.2.md",
+      "bytes": 1100,
+      "sha256": "200621189ab4775d589001931c05f611f8e6009954c2630c6697178f95575db7"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/ECONOMIC-METRICS-v1.0.2.md",
+      "bytes": 1610,
+      "sha256": "615f975f5b3ecbe9c0a2d72d33ebf487735b961cf38f2da3021225c5bf5b00ae"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/STOP-GO-RULES-v1.0.2.md",
+      "bytes": 1876,
+      "sha256": "fd0c2cbd75e8baca8428bf7c107c1590acfc61e655edbcd80d72a08be0ccfb04"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/TWR-CONTRACT-v1.0.4.md",
+      "bytes": 1350,
+      "sha256": "a729b38bbc655c255553005d5290766d9a2ecfef04890b119ea27d075547a467"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/VALIDATION-STAGES-v1.0.2.md",
+      "bytes": 2569,
+      "sha256": "32429fa18d1d4e6b1499247f01018e80e87327dfb0f87509af0818f2d68dea86"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/config/alpha-proof-policy.v1.0.2.yaml",
+      "bytes": 1326,
+      "sha256": "5d5c176569047881d5f28ce401f46318d4328405ad05a75c88153b3d29369681"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/golden/economic-golden-fixtures.v1.0.2.json",
+      "bytes": 2551,
+      "sha256": "8aee938fc2631eb5a857ef49e3d6858f42db8803aa22de10a23d83c25595cbb0"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/schemas/alpha-proof-report.schema.json",
+      "bytes": 3351,
+      "sha256": "381877e3f7b0cdbe683e9054665b8de1f9a011b0cd4acacf16c520c17b16417e"
+    },
+    {
+      "path": "02-domain-rules/economic-validation/schemas/economic-validation-run.schema.json",
+      "bytes": 1317,
+      "sha256": "bb4d96147421bb56b9d586a2023aa61becbbd5308c637936b5117bd5c86d76d6"
+    },
+    {
+      "path": "02-domain-rules/golden/GOLDEN-FIXTURES.md",
+      "bytes": 1021,
+      "sha256": "089fbfe728ebb52e4a1e3224cb0d3b6a15fd347bb97bb86eb37e0ca7d3f49db8"
+    },
+    {
+      "path": "02-domain-rules/golden/PROMOTION-GATES.md",
+      "bytes": 2068,
+      "sha256": "80588a09ecbc3a4b88e6a4f955f118dc54dc949597eeb9c7cdab52e48e190c49"
+    },
+    {
+      "path": "02-domain-rules/golden/REPLAY-ACCEPTANCE.md",
+      "bytes": 783,
+      "sha256": "68df35875086b33754d80593decd74c74720129e1f850580f345c75325e15534"
+    },
+    {
+      "path": "02-domain-rules/golden/golden-fixtures.v1.0.1.json",
+      "bytes": 4543,
+      "sha256": "3a13e707f098d105770351491bf9b7c16954b27a1910d487cad1d7e24a2251b0"
+    },
+    {
+      "path": "02-domain-rules/golden/golden-fixtures.v1.0.4.json",
+      "bytes": 19295,
+      "sha256": "5664009b87c702d956ebf7ce1f676e732a4dffc3141d570d618d793fb853e94a"
+    },
+    {
+      "path": "02-domain-rules/product-value/PRODUCT-SURVIVAL-GATES-v1.0.5.md",
+      "bytes": 2851,
+      "sha256": "09b48bd6a901bf7adc1781d53b671a15377ea9d57e463e4ad4d8d5c5c2b7a81a"
+    },
+    {
+      "path": "02-domain-rules/product-value/PRODUCT-VALUE-CONTRACT-v1.0.5.md",
+      "bytes": 2201,
+      "sha256": "6b69046fa94e9c7a5384daf7fb695591ee9f4f4c18dcb2973f96cbafccc1a826"
+    },
+    {
+      "path": "02-domain-rules/product-value/PRODUCT-VALUE-METRICS-v1.0.5.md",
+      "bytes": 1261,
+      "sha256": "dec8045616bd0f1833f308db5eaf0535069b32cd232aa9ded638b746099fe7d8"
+    },
+    {
+      "path": "02-domain-rules/product-value/PRODUCT-VALUE-REASON-CODES-v1.0.5.md",
+      "bytes": 860,
+      "sha256": "afde37355f13e4164386ec5365d741107f0018a0a83f80c236e1e3d0211f5be2"
+    },
+    {
+      "path": "02-domain-rules/product-value/config/product-value-policy.v1.0.5.yaml",
+      "bytes": 855,
+      "sha256": "b7c80b903a58cd208b2634d1651d7441accb4e539db7ff990cb32dcfa1c17351"
+    },
+    {
+      "path": "02-domain-rules/product-value/golden/product-value-golden-fixtures.v1.0.5.json",
+      "bytes": 5302,
+      "sha256": "229db89bfcc31566dc254a271c35a60ec5e5fa158208eaf1ca6e414c7d9666e3"
+    },
+    {
+      "path": "02-domain-rules/product-value/schemas/product-value-analysis-facts.schema.json",
+      "bytes": 1058,
+      "sha256": "8281717259cca7bce905603833d83e79c755bcac744e19854a200ba6f7c8a18e"
+    },
+    {
+      "path": "02-domain-rules/product-value/schemas/product-value-report.schema.json",
+      "bytes": 4536,
+      "sha256": "5c278f1971ec15184684d224f952c68db9dc777a6b11a77e853e0c5e441eb261"
+    },
+    {
+      "path": "02-domain-rules/schemas/action-plan.schema.json",
+      "bytes": 1881,
+      "sha256": "622240fbafa4217684901e4bc18fa90d225c99e42d3560aa79e3d90fb38f6351"
+    },
+    {
+      "path": "02-domain-rules/schemas/calculation-fact.schema.json",
+      "bytes": 1370,
+      "sha256": "dfd66b6de0868de8565838b1d0b1c84209cdd9e27ec257b6896b4e3e8298c7ff"
+    },
+    {
+      "path": "02-domain-rules/schemas/calculation-trace.schema.json",
+      "bytes": 914,
+      "sha256": "0bf0323a9d2feae71376ae82807deef4caaa13c7bf41a4903ce03111fa425af1"
+    },
+    {
+      "path": "02-domain-rules/schemas/candidate-event-fact.v1.0.7.schema.json",
+      "bytes": 1385,
+      "sha256": "20c6fdcbbbcb879aa95eb583f9b7a4b2dada78cae3450bceeb44e8f41759cd2b"
+    },
+    {
+      "path": "02-domain-rules/schemas/capital-action-plan.schema.json",
+      "bytes": 1869,
+      "sha256": "0743f00446a1cd050e800f9474e9264654d87b9f66a6070f6e24bec6afa01c82"
+    },
+    {
+      "path": "02-domain-rules/schemas/capital-inventory-plan.v1.0.6.schema.json",
+      "bytes": 1213,
+      "sha256": "3b56c50fa7ca4e2e3803b54467ad896beda15f8e58c1d4a9e64e12d3616de97f"
+    },
+    {
+      "path": "02-domain-rules/schemas/decision-analysis-export.v1.0.7.schema.json",
+      "bytes": 2140,
+      "sha256": "588a6305140be0a544550f146eeadb7148c5d4e1577c63d6ca22a373aa6da20b"
+    },
+    {
+      "path": "02-domain-rules/schemas/economics-by-size.schema.json",
+      "bytes": 1005,
+      "sha256": "2f2322d98b2e5b0cb64d370894ef981f393ce7e2d672c29ece4d146fcf6aa335"
+    },
+    {
+      "path": "02-domain-rules/schemas/execution-policy.schema.json",
+      "bytes": 1324,
+      "sha256": "28b83531f96ce18d3834cb7714f8bd588274cd77b685a339a114c30fb9f0766a"
+    },
+    {
+      "path": "02-domain-rules/schemas/module-state.schema.json",
+      "bytes": 1042,
+      "sha256": "52d3a032bb49ec4ae43285be565165fabdf5d041291a39aea9f0e0a88e376277"
+    },
+    {
+      "path": "02-domain-rules/schemas/opportunity-analysis-facts.schema.json",
+      "bytes": 2341,
+      "sha256": "f1aeb5050741f4177d72ef6bf3cbc1d15badf76bc733d191d6b1faffbfbd3d24"
+    },
+    {
+      "path": "02-domain-rules/schemas/opportunity.schema.json",
+      "bytes": 8596,
+      "sha256": "4297c50256e54014207f8206082ac421757bc7577bb39bf293a0f85865ffe23b"
+    },
+    {
+      "path": "02-domain-rules/schemas/owner-action-card.v1.0.6.schema.json",
+      "bytes": 1371,
+      "sha256": "192cd7fd1cbff93f752a11e5869996e54d71531195e382f3fd1630e981651627"
+    },
+    {
+      "path": "02-domain-rules/schemas/owner-alert-event.v1.0.6.schema.json",
+      "bytes": 876,
+      "sha256": "7d80f37d6b497840589bed4e85d77f1dd10a4c8211b9374515c2a7cfd786b71c"
+    },
+    {
+      "path": "02-domain-rules/schemas/performance-analysis-facts.schema.json",
+      "bytes": 1914,
+      "sha256": "52ffd022a368c912e55570106b49229d5abd734b497d2742123cf7468c6461c4"
+    },
+    {
+      "path": "02-domain-rules/schemas/pnl-reconciliation.schema.json",
+      "bytes": 2263,
+      "sha256": "02d8ae39c3a76804a08f098a12c63015472db1bda86690f53acd88d98b742a3f"
+    },
+    {
+      "path": "02-domain-rules/schemas/portfolio-analysis-facts.schema.json",
+      "bytes": 1573,
+      "sha256": "be0db27a8aa63405326ca717b1b4a5d4c2eb267ed9f47d7157e21da69a6f3f2e"
+    },
+    {
+      "path": "02-domain-rules/schemas/portfolio-recommendation.schema.json",
+      "bytes": 2386,
+      "sha256": "41e93eb40a68f268ce69657680b0d7cc11267835656f2f64840b85f29776206f"
+    },
+    {
+      "path": "02-domain-rules/schemas/strategy-runtime-config.schema.json",
+      "bytes": 925,
+      "sha256": "b61b27ba04783fa6e71afedbc93d02ac32d2df15039e9cc7036f8958a01d5617"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/CALCULATION-TRACE-V1.md",
+      "bytes": 1582,
+      "sha256": "634384da7bbfe3a7bc9eb5b41ad8d1e7a74df3828859041b77a487ee87907fa0"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/CAPACITY-MODEL-V1.md",
+      "bytes": 1667,
+      "sha256": "62ec904d1bded10e956aff0ecd51aed48120c34a87ccd24c2ca0a77113cba2fd"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/CAPITAL-ALLOCATOR-V1.md",
+      "bytes": 2414,
+      "sha256": "4f91990af1a72163c848061dc189f9b62dea4d94be7051398eee75ea3d70e5ac"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/COST-MODEL-V1.md",
+      "bytes": 2001,
+      "sha256": "17a77ec47234e60abee27dcd3887347e185c268fe5b847628bbc895f5d15de4d"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/EXECUTION-POLICIES-V1.md",
+      "bytes": 2176,
+      "sha256": "cb516044b474eca8865f797560318094358893c2553e9ac5c3aa3259104fbc68"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/INSTRUMENT-NORMALIZATION-V1.md",
+      "bytes": 1776,
+      "sha256": "448e187ffb5a896647c021850a6cd1a3064fd54e7d1845b0fe4ae1587edf1a01"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/MARGIN-LIQUIDATION-V1.md",
+      "bytes": 2003,
+      "sha256": "ac272ef1503bcff7bdbda585a2f144fa5e768be65080977c53a42548862cddb7"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/NUMERIC-UNITS.md",
+      "bytes": 768,
+      "sha256": "5e11736f3c50aa0f30a986e600510ecf2845032a3b45ff5af62d5292002e8e54"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/PERSISTENCE-MODEL-V1.md",
+      "bytes": 1728,
+      "sha256": "7b83cced547389676ed2374ce78e92af4279e042c1d507573d337620cc399b28"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/PNL-ACCOUNTING-V1.md",
+      "bytes": 1659,
+      "sha256": "2181194529e7a6acfbd5f9e75c6997028a143a597102462d84899e22134d4c8d"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/PORTFOLIO-RETURN-V1.md",
+      "bytes": 1315,
+      "sha256": "c71124cee77bb9b34422882b1f9e35ae1570fddd716a2b1551ebe3460f5cdf48"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/RETURN-NORMALIZATION-V1.md",
+      "bytes": 1402,
+      "sha256": "3bb1c237f4b59fecb52d726fb0fa25b389e42598fb5eb351194eb739b6307873"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/RISK-SCORING-V1.md",
+      "bytes": 3209,
+      "sha256": "dded25cfd0b5a66f1614f7d612b6b3a58e85604cf7f2e7440fd73c6701167090"
+    },
+    {
+      "path": "02-domain-rules/shared-rules/VALUATION-POLICY-V1.md",
+      "bytes": 1482,
+      "sha256": "519522db094e7e821637a909efb9b0479f63cbb8c973747b33d9bcb50f5b2ef8"
+    },
+    {
+      "path": "02-domain-rules/strategy-contracts/BASIS-CASH-CARRY-V1.md",
+      "bytes": 1572,
+      "sha256": "09c00f8cbbbdcbe99b103d4c6c272ad2126998ff8e71ac8eb80d2203a7066945"
+    },
+    {
+      "path": "02-domain-rules/strategy-contracts/CROSS-EXCHANGE-FUNDING-V1.md",
+      "bytes": 1822,
+      "sha256": "230ce92cbe5774ba59ffb4fbe581adab355f338465ef40db94655f46582b8785"
+    },
+    {
+      "path": "02-domain-rules/strategy-contracts/CROSS-EXCHANGE-SPREAD-V1.md",
+      "bytes": 1508,
+      "sha256": "a63e5ca5b2f309e9368be903db8c3cfd7a3158892d0d1cb34aa1fa50e9779b56"
+    },
+    {
+      "path": "02-domain-rules/strategy-contracts/FUNDING-NEUTRAL-V1.md",
+      "bytes": 2274,
+      "sha256": "4364ec6b77eb2110990cfb889c92c94e9790ffbb3567187cd952eab7822ab472"
+    },
+    {
+      "path": "02-domain-rules/strategy-contracts/IDLE-CAPITAL-YIELD-V1.md",
+      "bytes": 1482,
+      "sha256": "2421ab9e829b545b8b88cba3e1d0592fc2563e576a5180b4615bd22853dba66b"
+    },
+    {
+      "path": "03-implementation/AI-MODES-EXPORT-IMPLEMENTATION-v1.0.7.md",
+      "bytes": 1744,
+      "sha256": "a34a374ecb4f82df450d4e3625d5660fca6e2c757a2bcfefa904d815fdd3fe74"
+    },
+    {
+      "path": "03-implementation/ALPHA-PROOF-REPORTING.md",
+      "bytes": 760,
+      "sha256": "1b67de28770643b934950b3fd90e8f8c6064d9b8e03a84fac98092ffb0e19108"
+    },
+    {
+      "path": "03-implementation/API-CONTRACTS.md",
+      "bytes": 1233,
+      "sha256": "68099722ab61b58a908aba9ee0ecddbd68ac941959dc66bde8e1d972070894fc"
+    },
+    {
+      "path": "03-implementation/ARCHITECTURE.md",
+      "bytes": 2287,
+      "sha256": "510a59966fbe59523a96b7f820121ad32bbc120831cb8dc9c93466323d8daf00"
+    },
+    {
+      "path": "03-implementation/BATCH-00F-AI-EXPORT-FREEZE-v1.0.7.md",
+      "bytes": 519,
+      "sha256": "fb94fc162aa83328c7f7b600169bf63fcffb3b397baf54954cd0a843bee68471"
+    },
+    {
+      "path": "03-implementation/CALCULATION-FACTS-ARCHITECTURE-v1.0.4.md",
+      "bytes": 1109,
+      "sha256": "a0708a05e0adffb53f7d3af59bb9ae968a41bcdd3eed52b16bc7121ff549a5e9"
+    },
+    {
+      "path": "03-implementation/CODEX-IMPLEMENTATION-PLAN.md",
+      "bytes": 7877,
+      "sha256": "4ef9b87243625529fead6e467ee2c50f91c5f4499d08433506c8fb649c1d1555"
+    },
+    {
+      "path": "03-implementation/DATA-MODEL.md",
+      "bytes": 1845,
+      "sha256": "f39dd5b8d9d460fffdf9c7350d58ba586258e2b6bac3e515aa4941f248c641b8"
+    },
+    {
+      "path": "03-implementation/ECONOMIC-VALIDATION-ENGINE.md",
+      "bytes": 1200,
+      "sha256": "019e3ba4cc51d77060a60b45654c9567a74eccea85f9fb391e5467a89b46d89b"
+    },
+    {
+      "path": "03-implementation/EXCHANGE-CONNECTORS.md",
+      "bytes": 1996,
+      "sha256": "8cccfb626d2bd27edcb926635880c877132a5b438fb251113e08881ba77fcb60"
+    },
+    {
+      "path": "03-implementation/EXECUTION-STATE-MACHINE.md",
+      "bytes": 960,
+      "sha256": "35515d0fc67beb448ab0df493b00df2f8f21b3fce2f8fcbffbb9fe63abf2161a"
+    },
+    {
+      "path": "03-implementation/HISTORICAL-DATA-INGESTION.md",
+      "bytes": 1597,
+      "sha256": "de5a0a25a0a182962ae1f9fdb8694109671deedf100e98ce786d1e9e21992128"
+    },
+    {
+      "path": "03-implementation/MODULE-INTERFACES-v1.0.3.md",
+      "bytes": 737,
+      "sha256": "f7dd5c9d58c5ddb06a00fc0f840b8bda517b9b8c9f7984f10952294c837d45ef"
+    },
+    {
+      "path": "03-implementation/OBSERVABILITY.md",
+      "bytes": 1018,
+      "sha256": "b32e4a73cafc6716a725609dae42bf4c715472503200ed709cc0903307917698"
+    },
+    {
+      "path": "03-implementation/OFFICIAL-API-REFERENCE-SNAPSHOT.md",
+      "bytes": 979,
+      "sha256": "2ac9335ad20fe652b1232f81039309ce6ce4a30443399d814a17468b120140ce"
+    },
+    {
+      "path": "03-implementation/OPPORTUNITY-ENGINE.md",
+      "bytes": 1030,
+      "sha256": "46c985b492d1cb346c918d927fc8f5a04910ced8ac366bf2d74b16194b992c4a"
+    },
+    {
+      "path": "03-implementation/PERSONAL-UX-VIEWMODELS-v1.0.6.md",
+      "bytes": 2439,
+      "sha256": "8a52afdb604f717ad53340f303f4b56f7c8561720aa07a05b0b627502bc5b4a3"
+    },
+    {
+      "path": "03-implementation/PORTFOLIO-ORCHESTRATION-v1.0.3.md",
+      "bytes": 882,
+      "sha256": "7d54de0664d51ef9f35f9c6926e05ffcbba39ece4a541c9b323bf4accccfe5ab"
+    },
+    {
+      "path": "03-implementation/PRODUCT-VALUE-ENGINE-v1.0.5.md",
+      "bytes": 1366,
+      "sha256": "82ed9848e7b30372e4ce02a23029809060604c875199974111a025ae6fbe298b"
+    },
+    {
+      "path": "03-implementation/SECURITY.md",
+      "bytes": 1105,
+      "sha256": "985cdb955cfd8704ed0ddca84620c2db78ba0804b39356a906d484fc00171764"
+    },
+    {
+      "path": "03-implementation/TEST-PLAN.md",
+      "bytes": 2585,
+      "sha256": "427fd97564144dfee79c16b1c231bf67bcff422f9e6dd1cd40e7ff8a8a5da2df"
+    },
+    {
+      "path": "03-implementation/UX-VIEWMODELS-v1.0.3.md",
+      "bytes": 918,
+      "sha256": "13df409d73ed27d40373b7a68bb8d0119519ccd18f1765274aec37b7cac81018"
+    },
+    {
+      "path": "03-implementation/config/strategy-registry.example.yaml",
+      "bytes": 117,
+      "sha256": "fb0f0e256310e580c187623e0081e0f741355d45efa525ebaf41ed5cb6f550fa"
+    },
+    {
+      "path": "03-implementation/migrations/002-economic-validation.sql",
+      "bytes": 1388,
+      "sha256": "7d28cf9a2d8bfe30b73a7ed3ea24c264157254e67c47f906ab330e82bc7b46e1"
+    },
+    {
+      "path": "03-implementation/migrations/003-module-portfolio-orchestration.sql",
+      "bytes": 1139,
+      "sha256": "ac2d0206ad81be1fbd95d06fdae146e6f799598aca7ecb3a8967dd0520c6959c"
+    },
+    {
+      "path": "03-implementation/migrations/004-calculation-facts.sql",
+      "bytes": 2272,
+      "sha256": "51b5a69754b006369015f9aca6a3b84158ae4141d9d3333bf63516360b1c493d"
+    },
+    {
+      "path": "03-implementation/migrations/005-product-value.sql",
+      "bytes": 1105,
+      "sha256": "573c9a33bb72143c7ea3e804a098bed018a7be7ad98291abae08c42c7cb5c721"
+    },
+    {
+      "path": "03-implementation/schema.sql",
+      "bytes": 3800,
+      "sha256": "19a6129a501c6b50cfa071140daf3558fa247141b5f225037a3ca9b0ec7ad714"
+    },
+    {
+      "path": "04-production-handoff/ACCEPTANCE-TESTS.md",
+      "bytes": 2517,
+      "sha256": "dfab69099dedc5d606bda6a7a0fa945ac39f7b8842d8a9ebfb5a465a925a358c"
+    },
+    {
+      "path": "04-production-handoff/ALPHA-PROOF-GATES.md",
+      "bytes": 1166,
+      "sha256": "09fd823f38ca7e781b114527a5f96c11ad68f6ac5185b9ff986420047c637214"
+    },
+    {
+      "path": "04-production-handoff/ALPHA-PROOF-REPORT-TEMPLATE.md",
+      "bytes": 914,
+      "sha256": "412a624f85bca6477bd7f1d814f0131ddf29e4ba090daa344bb5ec199e9982ba"
+    },
+    {
+      "path": "04-production-handoff/ALPHA-PROOF-RUNBOOK.md",
+      "bytes": 839,
+      "sha256": "fa914a87705727723acb53e399749ab8ed7429e9a111e3e169f4d65878224a3e"
+    },
+    {
+      "path": "04-production-handoff/CALCULATION-COVERAGE-MATRIX-v1.0.4.md",
+      "bytes": 1505,
+      "sha256": "897bf5fb0cb62f4128db12611cf25fc71c3b7d78abb0fa5f1327bbcf958cfa7b"
+    },
+    {
+      "path": "04-production-handoff/DEPLOYMENT.md",
+      "bytes": 904,
+      "sha256": "cba7bc545450e9773aaaa2ebac9e51089e6450feee48e02f0be7887280920c82"
+    },
+    {
+      "path": "04-production-handoff/ENVIRONMENT.md",
+      "bytes": 558,
+      "sha256": "e0e227200597bcca9fe2fd6fbbd29d57697db3c92f6725a196ca8c5b3ddc48a2"
+    },
+    {
+      "path": "04-production-handoff/HANDOFF-TO-CODEX.md",
+      "bytes": 3730,
+      "sha256": "997c9fd7df3159424d4035b44aff8636d8e660c3bc71d53510df255357411175"
+    },
+    {
+      "path": "04-production-handoff/INCIDENT-PLAYBOOK.md",
+      "bytes": 1029,
+      "sha256": "ae4dccd6baa8113297d4017e83c902db672dfe60185ffcd94de749f7b6e1bc18"
+    },
+    {
+      "path": "04-production-handoff/LAUNCH-GATES.md",
+      "bytes": 1770,
+      "sha256": "1580cf7901dc4646bdf8d55ff5e4752a9bd885087c45f218a16ed1ff770fb243"
+    },
+    {
+      "path": "04-production-handoff/MODULE-READINESS-MATRIX-v1.0.3.md",
+      "bytes": 844,
+      "sha256": "07e6147a7b2754a817686904f00c1d77184b1cb684f0ac61eb178b3b0a4958c0"
+    },
+    {
+      "path": "04-production-handoff/PRODUCT-SURVIVAL-RUNBOOK-v1.0.5.md",
+      "bytes": 908,
+      "sha256": "93eb196ed9e851a2d228d559ddc2282d6ab9400793f603b5365aeb06303dda04"
+    },
+    {
+      "path": "04-production-handoff/PRODUCTION-KPIS.md",
+      "bytes": 1467,
+      "sha256": "91a92f2e6c9c77d10e66668d108e55ccf3f1efd0cbfe937c644d631da8fe545d"
+    },
+    {
+      "path": "04-production-handoff/RUNBOOK.md",
+      "bytes": 849,
+      "sha256": "48795f10c3fed3debd5cb894a13540f1fd0c6f344a23fc2cf372a6687ab77434"
+    },
+    {
+      "path": "04-production-handoff/V1.0.3-ACCEPTANCE-ADDENDUM.md",
+      "bytes": 918,
+      "sha256": "0e4a11740f075bfb26f27d0a0527d3debee784fe75208a4013ef86e6b382ec07"
+    },
+    {
+      "path": "04-production-handoff/V1.0.4-CALCULATION-ACCEPTANCE.md",
+      "bytes": 1062,
+      "sha256": "5b8309671f1dbd984395ab461a7d7c6cbef1efef0f13c02acb06fd18c4d8a363"
+    },
+    {
+      "path": "04-production-handoff/V1.0.4-VALIDATION-REPORT.md",
+      "bytes": 568,
+      "sha256": "9d925ff79a9be8bfd4fbcbdf234e6320cc28d93958afbdd073745feb4b1b2e80"
+    },
+    {
+      "path": "04-production-handoff/V1.0.5-PRODUCT-VALUE-ACCEPTANCE.md",
+      "bytes": 1098,
+      "sha256": "4fc4b663834a52ac88d5677e3b52bf9dc0c47a8b90c9a49762cf656cc7949f5c"
+    },
+    {
+      "path": "04-production-handoff/V1.0.5-VALIDATION-REPORT.md",
+      "bytes": 894,
+      "sha256": "1da51460d6c2ab9ef515c034f3844ae9accef2c637cc5e8886ce7609add70d69"
+    },
+    {
+      "path": "04-production-handoff/V1.0.6-PERSONAL-UX-ACCEPTANCE.md",
+      "bytes": 2712,
+      "sha256": "bd934bd1f7ab56f4ec11632a6310e9938fa56890eefbc43879c258153d0b01e3"
+    },
+    {
+      "path": "04-production-handoff/V1.0.6-VALIDATION-REPORT.md",
+      "bytes": 1258,
+      "sha256": "f305644045f71897545852a5ad94b1d35f04879dd528949d0833e1afa30a7e89"
+    },
+    {
+      "path": "04-production-handoff/V1.0.7-AI-EXPORT-ACCEPTANCE.md",
+      "bytes": 1738,
+      "sha256": "1d120b1be67074b805e3561b1b59ada25e596b94a987c28c4329df29a1a6800d"
+    },
+    {
+      "path": "04-production-handoff/production.env.example",
+      "bytes": 194,
+      "sha256": "1f17ee5f5abbe89461204b6fadb13043f851136f85b67d0050c79cb95ff85e22"
+    },
+    {
+      "path": "CHANGELOG-v1.0.1.md",
+      "bytes": 764,
+      "sha256": "ead224bb73847330550085a22a1f1b6ce34b05d72c6ef44351b49b2b527d8f90"
+    },
+    {
+      "path": "CHANGELOG-v1.0.2.md",
+      "bytes": 683,
+      "sha256": "944c5de5ad959effe9da50aee74618526450c35365caaff0bcdefea6b66aac56"
+    },
+    {
+      "path": "CHANGELOG-v1.0.3.md",
+      "bytes": 1293,
+      "sha256": "c8c06663cbbdf1a72c233a41e53c7179d85d6f2f8777843db3f518259045599f"
+    },
+    {
+      "path": "CHANGELOG-v1.0.4.md",
+      "bytes": 1587,
+      "sha256": "f16b2b43c094b7548524ed377044d8e96894396ea3458b3cca275b7413a49689"
+    },
+    {
+      "path": "CHANGELOG-v1.0.5.md",
+      "bytes": 2364,
+      "sha256": "17f1feffd49ceb6ff1a6528495f776dbd81188a273913717534973da729d68f6"
+    },
+    {
+      "path": "CHANGELOG-v1.0.6.md",
+      "bytes": 1525,
+      "sha256": "d3eae64551655c02ffc317ff41d15f6bd41e4ce69229a1d76e20ec360ea02c84"
+    },
+    {
+      "path": "CHANGELOG-v1.0.7.md",
+      "bytes": 1462,
+      "sha256": "524ffc7b47b24a412cb5d8b858a28577bbf60dd2f4baeb7e6e9e1221012b8da4"
+    },
+    {
+      "path": "MASTER-CONTRACT.md",
+      "bytes": 16570,
+      "sha256": "75b0391ca6943811f97a151b2010d584dbffff6d3dfc970d159f0cd9dc2acc00"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6158,
+      "sha256": "403652c44665cc5509989b57b7b336574aed2cda9984c52f3821deaad26454d3"
+    }
+  ]
+}

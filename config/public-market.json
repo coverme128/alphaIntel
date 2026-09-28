@@ -1,0 +1,15 @@
+{
+ "version":"public-observation-1.0.0",
+ "sizeBandsUsd":[1000,5000,10000,25000,50000,100000],
+ "referenceSizeUsd":5000,
+ "timeoutMs":8000,
+ "pollIntervalMs":60000,
+ "maxHistoryDays":90,
+ "valuationTtlMs":120000,
+ "feesBps":{
+   "OKX":{"SPOT":10,"PERPETUAL":6,"FUTURE":6},
+   "Binance":{"SPOT":10,"PERPETUAL":6,"FUTURE":6},
+   "Bybit":{"SPOT":10,"PERPETUAL":6,"FUTURE":6},
+   "Hyperliquid":{"SPOT":10,"PERPETUAL":6,"FUTURE":6}
+ }
+}

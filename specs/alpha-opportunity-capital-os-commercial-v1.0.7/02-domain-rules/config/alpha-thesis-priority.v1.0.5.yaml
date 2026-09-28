@@ -1,0 +1,20 @@
+version: 1.0.5
+principle: RISK_PREMIUM_ALLOCATION_NOT_RAW_PRICE_ARBITRAGE
+priorities:
+  CORE:
+    - funding-neutral
+    - cross-exchange-funding
+    - basis-cash-carry
+    - idle-capital-yield
+    - capital-rotation
+  OPPORTUNISTIC:
+    - cross-exchange-spread
+  CONTRACT_READY_DISABLED:
+    - structured-products
+    - options-volatility
+runtimeSemantics:
+  priorityDoesNotOverrideQualification: true
+  priorityDoesNotOverrideRisk: true
+  priorityDoesNotOverridePromotionGate: true
+  opportunisticMayStillExecuteWhenQualified: true
+  noDedicatedHighFrequencyInfrastructureForCrossExchangeSpreadInV1: true

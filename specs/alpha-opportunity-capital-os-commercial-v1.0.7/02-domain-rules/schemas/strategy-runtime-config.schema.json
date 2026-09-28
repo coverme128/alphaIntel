@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StrategyRuntimeConfig",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "family",
+    "status",
+    "qualification"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "family": {
+      "enum": [
+        "FUNDING_NEUTRAL",
+        "BASIS_CASH_CARRY",
+        "CROSS_EXCHANGE_FUNDING",
+        "CROSS_EXCHANGE_SPREAD",
+        "IDLE_CAPITAL_YIELD"
+      ]
+    },
+    "status": {
+      "enum": [
+        "DRAFT",
+        "PAPER_APPROVED",
+        "ASSISTED_APPROVED",
+        "AUTO_APPROVED",
+        "RETIRED"
+      ]
+    },
+    "qualification": {
+      "type": "object"
+    },
+    "freshness": {
+      "type": "object"
+    },
+    "exit": {
+      "type": "object"
+    },
+    "holding": {
+      "type": "object"
+    },
+    "reserves": {
+      "type": "object"
+    }
+  }
+}

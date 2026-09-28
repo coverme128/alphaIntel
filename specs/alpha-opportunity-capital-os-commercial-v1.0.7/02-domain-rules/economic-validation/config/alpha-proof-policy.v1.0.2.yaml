@@ -1,0 +1,49 @@
+contractId: ALPHA_PROOF_POLICY_V1_0_2
+version: 1.0.2
+defaultEconomicStatus: UNPROVEN
+replay:
+  minCalendarDays: 180
+  preferredCalendarDays: 365
+  minDistinctMonths: 6
+  calibrationFraction: 0.7
+  holdoutFraction: 0.3
+  maxSingleExecutionProfitSharePct: 25.0
+  feeStressMultiplier: 1.25
+  slippageStressMultiplier: 1.5
+  capacityStressMultiplier: 0.5
+paper:
+  minLiveDays: 30
+  minCaptureRatio: 0.6
+livePositive:
+  minLiveDays: 60
+  minClosedCyclesAggregate: 30
+  requirePositiveRealizedNetPnl: true
+  requirePositiveExcessReturn: true
+  terminalReconciliationPct: 100.0
+alphaValidation:
+  minLiveDays: 90
+  minClosedCyclesAggregate: 50
+  minAnnualizedExcessReturnPct: 3.0
+  minCaptureRatio: 0.65
+  maxSingleExecutionProfitSharePct: 25.0
+  maxTopFiveProfitSharePct: 50.0
+  requireNoSeverity1Incident: true
+expansionWorthiness:
+  minLiveDays: 120
+  preferredLiveDays: 180
+  minAnnualizedExcessReturnPct: 5.0
+  minValueToRunCostRatio: 3.0
+  ownerConfiguredMinAnnualEconomicValueUsd: null
+annualization:
+  minDays: 30
+  earlySampleUntilDays: 89
+  liveSampleFromDays: 90
+benchmark:
+  primary: PASSIVE_STABLE_YIELD
+  fallback: OWNER_CONFIGURED_BENCHMARK
+  diagnostics:
+  - ZERO_YIELD_CASH
+  - BUY_AND_HOLD
+  - SIMPLE_CARRY
+missingMandatoryCostBehavior: EXCLUDE_FROM_ALPHA_PROOF
+autoDemotionOnFormulaOrConnectorSemanticChange: true
