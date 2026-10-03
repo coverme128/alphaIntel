@@ -1,3 +1,4 @@
+import { networkMessage } from "./market-presentation";
 import PersonalWorkspace from "./PersonalWorkspace";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -299,8 +300,20 @@ export default function App() {
         <h2>Alpha Capital OS</h2>
         {error ? (
           <>
-            <p>{error}</p>
-            <button onClick={load}>重新连接</button>
+            <h3>暂时无法连接本地看板</h3>
+            <p>可能是启动终端已关闭，或本地服务尚未运行。</p>
+            <div className="startup-help">
+              <p>在项目目录的终端运行：</p>
+              <code>ALPHA_PUBLIC_AUTOSTART=true npm start</code>
+              <p>保持终端运行，然后重新连接。无需配置 API Key。</p>
+            </div>
+            <button className="primary" onClick={load}>
+              重新连接
+            </button>
+            <details>
+              <summary>连接详情</summary>
+              <p>{networkMessage(error)}</p>
+            </details>
           </>
         ) : (
           <p>
@@ -490,14 +503,16 @@ export default function App() {
           </div>
         </header>
         <main>
-          <div className="page-heading">
+          <div
+            className={`page-heading ${personalView && page === "Opportunities" ? "market-page-heading" : ""}`}
+          >
             <div>
               <div className="eyebrow">YOUR CAPITAL, WITH CLARITY</div>
               <h1>
                 {page === "Today"
                   ? "让每一笔资金，都有清晰的下一步。"
                   : page === "Opportunities"
-                    ? "发现值得关注的机会。"
+                    ? "现在有哪些值得看的机会？"
                     : page === "Positions"
                       ? "每个持仓，都在掌握之中。"
                       : page === "Portfolio"

@@ -217,9 +217,9 @@ export default function PersonalWorkspace({ page }: { page: string }) {
         };
         return (rank[a.code] ?? 9) - (rank[b.code] ?? 9);
       });
-  const launchPaper = (candidateId: string) => {
+  const launchPaper = (candidateId: string, sizeUsd?: number) => {
     setMode("PAPER");
-    setDialog({ type: "paper", candidateId });
+    setDialog({ type: "paper", candidateId, sizeUsd });
   };
   const riskFields = (
     <div className="personal-form-grid">
@@ -383,48 +383,52 @@ export default function PersonalWorkspace({ page }: { page: string }) {
   );
   return (
     <div className="personal-workspace">
-      <div className="personal-toolbar">
-        <div className="market-mode-tabs">
-          <button
-            className={mode === "PAPER" ? "active" : ""}
-            disabled={busy}
-            onClick={() => setMode("PAPER")}
-          >
-            真实行情模拟
-          </button>
-          <button
-            className={mode === "MANUAL" ? "active" : ""}
-            disabled={busy}
-            onClick={() => setMode("MANUAL")}
-          >
-            个人手动记账
-          </button>
-        </div>
-        <button
-          className="outline compact"
-          disabled={busy}
-          onClick={async () => {
-            setBusy(true);
-            try {
-              await api("/api/personal/sync", {});
-              await load();
-            } catch (e) {
-              setError((e as Error).message);
-            } finally {
-              setBusy(false);
-            }
-          }}
-        >
-          <RefreshCw size={14} />
-          刷新估值与结算
-        </button>
-      </div>
-      <div className="notice personal-notice">
-        {mode === "PAPER"
-          ? "使用真实盘口模拟成交；资金和收益均为模拟，费用为配置估计。允许研究未达收益门槛的候选，但不会放宽数量和行情证据要求。"
-          : "按你录入的成交和费用记账，公开行情仅用于参考估值。这里不会向交易所发送订单，也不代表交易所对账完成。"}
-        现金按录入的 USD 账面值计量。
-      </div>
+      {page !== "Opportunities" && (
+        <>
+          <div className="personal-toolbar">
+            <div className="market-mode-tabs">
+              <button
+                className={mode === "PAPER" ? "active" : ""}
+                disabled={busy}
+                onClick={() => setMode("PAPER")}
+              >
+                真实行情模拟
+              </button>
+              <button
+                className={mode === "MANUAL" ? "active" : ""}
+                disabled={busy}
+                onClick={() => setMode("MANUAL")}
+              >
+                个人手动记账
+              </button>
+            </div>
+            <button
+              className="outline compact"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  await api("/api/personal/sync", {});
+                  await load();
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <RefreshCw size={14} />
+              刷新估值与结算
+            </button>
+          </div>
+          <div className="notice personal-notice">
+            {mode === "PAPER"
+              ? "使用真实盘口模拟成交；资金和收益均为模拟，费用为配置估计。允许研究未达收益门槛的候选，但不会放宽数量和行情证据要求。"
+              : "按你录入的成交和费用记账，公开行情仅用于参考估值。这里不会向交易所发送订单，也不代表交易所对账完成。"}
+            现金按录入的 USD 账面值计量。
+          </div>
+        </>
+      )}
       {error && (
         <div role="alert" className="error-banner">
           {error}
@@ -440,7 +444,13 @@ export default function PersonalWorkspace({ page }: { page: string }) {
         </div>
       )}
       {page === "Opportunities" ? (
-        <PublicMarket onSimulate={launchPaper} />
+        <PublicMarket
+          onSimulate={launchPaper}
+          onManageFunds={() => {
+            setMode("PAPER");
+            location.hash = "Portfolio";
+          }}
+        />
       ) : !data ? (
         <p>正在读取个人账本…</p>
       ) : (
@@ -899,7 +909,7 @@ export default function PersonalWorkspace({ page }: { page: string }) {
                       type="number"
                       min="1"
                       step="any"
-                      defaultValue={1000}
+                      defaultValue={dialog.sizeUsd ?? 1000}
                       required
                     />
                   </Field>

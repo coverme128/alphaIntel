@@ -1,24 +1,24 @@
+import {
+  candidateGroup,
+  capitalEstimate,
+  comparableAnnualized,
+  duration,
+  networkMessage,
+  simulationBlocker,
+  type CandidateGroup,
+} from "./market-presentation";
 import { useEffect, useState, useRef } from "react";
 import {
-  Activity,
   ArrowRight,
-  ArrowUpRight,
-  Check,
   Clock3,
   Database,
   LoaderCircle,
-  Pause,
-  Play,
   RefreshCw,
   Search,
   ShieldCheck,
   X,
 } from "lucide-react";
-import type {
-  PublicMarketState,
-  PublicCandidate,
-  MarketSnapshot,
-} from "../market/types";
+import type { PublicMarketState, PublicCandidate } from "../market/types";
 const names: Record<string, string> = {
   FUNDING_NEUTRAL: "资金费率中性",
   BASIS_CASH_CARRY: "期现基差",
@@ -56,6 +56,11 @@ const reasons: Record<string, string> = {
   CROSS_VENUE_PREMIUM_LIMIT: "跨所标记溢价超限",
   FUNDING_HISTORY_GAP: "历史结算记录存在缺口",
   FUNDING_STALE: "资金费数据已过期",
+  SPOT_INVENTORY_UNSUPPORTED: "需要预置现货库存，当前账本暂不支持这类模拟",
+  MARKET_EVIDENCE_INCOMPLETE: "市场数据不完整，暂不能模拟",
+  INSUFFICIENT_FUNDING_HISTORY: "历史资金费样本不足",
+  INSTRUMENT_METADATA_STALE: "合约信息已过期",
+  MARK_INDEX_MISSING: "缺少标记价或指数价",
   EXIT_DEPTH_MISSING: "退出侧深度不足",
 };
 const reason = (r: string) => reasons[r] ?? r;
@@ -108,7 +113,7 @@ function Dialog({
       if (e.key === "Escape") closeRef.current();
       if (e.key === "Tab") {
         const nodes = ref.current?.querySelectorAll<HTMLElement>(
-          "button,input,select,summary",
+          "button:not(:disabled),input:not(:disabled),select:not(:disabled),summary",
         );
         if (!nodes?.length) return;
         const first = nodes[0],
@@ -164,7 +169,11 @@ function Dialog({
 }
 export default function PublicMarket({
   onSimulate,
-}: { onSimulate?: (id: string) => void } = {}) {
+  onManageFunds,
+}: {
+  onSimulate?: (id: string, sizeUsd?: number) => void;
+  onManageFunds?: () => void;
+} = {}) {
   const [state, setState] = useState<PublicMarketState | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -174,17 +183,38 @@ export default function PublicMarket({
     [view, setView] = useState("CANDIDATES"),
     [historyInstrument, setHistoryInstrument] = useState(""),
     [days, setDays] = useState("7"),
-    [history, setHistory] = useState<any | null>(null);
+    [history, setHistory] = useState<any | null>(null),
+    [group, setGroup] = useState<CandidateGroup>("WATCH"),
+    [sort, setSort] = useState("DURATION"),
+    [limit, setLimit] = useState(6),
+    [now, setNow] = useState(Date.now()),
+    [previewSize, setPreviewSize] = useState(5000),
+    [paperAccounts, setPaperAccounts] = useState<any[] | null>(null),
+    [heldIds, setHeldIds] = useState<string[] | null>(null);
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  useEffect(() => {
+    setLimit(6);
+    setHeldIds(null);
+  }, [group, strategy, search, sort]);
+  const fetching = useRef(false);
   const fetchState = async () => {
+    if (fetching.current) return;
+    fetching.current = true;
     try {
       setState(await request("/api/public-market"));
+      setError("");
     } catch (e) {
-      setError((e as Error).message);
+      setError(networkMessage(e));
+    } finally {
+      fetching.current = false;
     }
   };
   useEffect(() => {
     fetchState();
-    const timer = setInterval(fetchState, 5000);
+    const timer = setInterval(fetchState, 1000);
     return () => clearInterval(timer);
   }, []);
   const control = async (action: string) => {
@@ -193,17 +223,28 @@ export default function PublicMarket({
     try {
       setState(await request(`/api/public-market/${action}`, {}));
     } catch (e) {
-      setError((e as Error).message);
+      setError(networkMessage(e));
     } finally {
       setBusy(false);
     }
   };
-  const showDetail = async (c: PublicCandidate) => {
+  const showDetail = async (c: PublicCandidate, size = c.referenceSizeUsd) => {
     setBusy(true);
     try {
-      setDetail(await request(`/api/public-market/candidates/${c.id}`));
+      const result = await request(`/api/public-market/candidates/${c.id}`);
+      setDetail(result);
+      setPreviewSize(size);
+      setPaperAccounts(null);
+      if (onSimulate) {
+        try {
+          const book = await request("/api/personal?mode=PAPER");
+          setPaperAccounts(book.accounts);
+        } catch {
+          setPaperAccounts(null);
+        }
+      }
     } catch (e) {
-      setError((e as Error).message);
+      setError(networkMessage(e));
     } finally {
       setBusy(false);
     }
@@ -224,38 +265,110 @@ export default function PublicMarket({
         .toLowerCase()
         .includes(search.toLowerCase()),
   );
-  const sorted = [...candidates].sort(
-    (a, b) =>
-      Number(a.status !== "WATCH") - Number(b.status !== "WATCH") ||
-      (b.netPct ?? -Infinity) - (a.netPct ?? -Infinity),
+  const available = state.enabled && !error;
+  const counts = { WATCH: 0, REJECTED: 0, ATTENTION: 0 };
+  for (const c of state.candidates) counts[candidateGroup(c, now, available)]++;
+  const sorted = candidates
+    .filter((c) => candidateGroup(c, now, available) === group)
+    .sort((a, b) =>
+      sort === "ANNUALIZED"
+        ? (comparableAnnualized(b) ?? -Infinity) -
+            (comparableAnnualized(a) ?? -Infinity) ||
+          a.holdingSeconds - b.holdingSeconds
+        : a.holdingSeconds - b.holdingSeconds || a.asset.localeCompare(b.asset),
+    );
+  const displayed = heldIds
+    ? heldIds
+        .map((id) => state.candidates.find((c) => c.id === id))
+        .filter((c): c is PublicCandidate => !!c)
+    : sorted;
+  const holdList = () => setHeldIds((ids) => ids ?? sorted.map((c) => c.id));
+  const live = state.connections.filter((c) => c.streamState === "LIVE").length;
+  const headline = !state.enabled
+    ? "连接行情，查看当前候选"
+    : error
+      ? "连接中断，当前数据暂不可用"
+      : !state.candidates.length
+        ? "正在准备市场数据"
+        : counts.WATCH
+          ? `${counts.WATCH} 个候选值得进一步查看`
+          : counts.ATTENTION === state.candidates.length
+            ? "数据仍待更新，暂时无法判断"
+            : "当前没有达到观察条件的候选";
+  const currentDetail = detail
+    ? (state.candidates.find((c) => c.id === detail.candidate.id) ??
+      (detail.candidate as PublicCandidate))
+    : null;
+  const detailEconomics = currentDetail?.economics.find(
+    (e) => e.notionalUsd === previewSize,
   );
+  const latestEconomics = currentDetail?.economics.find(
+    (e: any) => e.notionalUsd === previewSize,
+  );
+  const blocked = currentDetail
+    ? simulationBlocker(currentDetail, latestEconomics, now, available)
+    : null;
+  const selectedCapital = capitalEstimate(detailEconomics);
+  const requirements: Record<string, number> = {};
+  for (const leg of latestEconomics?.legs ?? []) {
+    const kind = state.snapshots.find(
+      (s) => s.instrument.id === leg.instrumentId,
+    )?.instrument.kind;
+    const configured = paperAccounts?.find((a) => a.venue === leg.venue)
+      ?.feeBps?.[kind ?? ""];
+    requirements[leg.venue] =
+      (requirements[leg.venue] ?? 0) +
+      leg.notionalUsd * (1 + (configured ?? leg.feeBps) / 10000);
+  }
+  const shortfall =
+    paperAccounts !== null &&
+    Object.entries(requirements).some(
+      ([venue, required]) =>
+        required >
+        (paperAccounts.find((a) => a.venue === venue)?.cashUsd ?? 0) + 1e-7,
+    );
   return (
     <div className="public-market">
-      <div className="public-intro">
-        <div>
-          <span className="eyebrow">PUBLIC MARKET · 无需账户</span>
-          <h2>从真实市场数据开始。</h2>
-          <p>
-            公开行情与模拟账本独立。当前扫描 {state.assets.join(" / ")}
-            ；所有候选尚不可直接下单。
-          </p>
-        </div>
-        <div className="public-controls">
+      <div className="decision-summary">
+        <div className="decision-source">
+          <span className={`status-dot ${live ? "" : "muted"}`} />
+          <span>交易所真实行情 · 无需账户</span>
           <button
-            className="outline"
-            disabled={busy || state.scanning}
-            onClick={() => control("refresh")}
+            className="text-button"
+            onClick={() => setView(view === "DATA" ? "CANDIDATES" : "DATA")}
           >
-            <RefreshCw size={14} className={busy ? "spin" : ""} />
-            刷新快照
+            数据状态 {live} / {state.connections.length}
           </button>
+        </div>
+        <h2>{headline}</h2>
+        <p>
+          {!state.enabled
+            ? "启动行情后再判断，缓存结果仅供回看。"
+            : counts.WATCH
+              ? "这些是研究候选，尚不能直接下单。先比较资金占用、持有期和主要限制。"
+              : counts.ATTENTION === state.candidates.length
+                ? "先等待有效行情；数据不足不等于市场没有机会。"
+                : "无需为了操作而选择。可查看未达门槛原因，或等待市场变化。"}
+        </p>
+        <div className="decision-controls">
+          <span>
+            覆盖 {state.assets.join(" / ")} · 已评估 {state.candidates.length}{" "}
+            个组合
+          </span>
           <button
-            className={state.enabled ? "outline" : "primary"}
-            disabled={busy}
-            onClick={() => control(state.enabled ? "stop" : "start")}
+            className="outline compact"
+            disabled={busy || state.scanning}
+            onClick={() => control(state.enabled ? "refresh" : "start")}
           >
-            {state.enabled ? <Pause size={14} /> : <Play size={14} />}{" "}
-            {state.enabled ? "停止订阅" : "连接公开市场"}
+            <RefreshCw
+              size={14}
+              className={busy || state.scanning ? "spin" : ""}
+            />
+            {!state.enabled
+              ? "连接公开市场"
+              : state.scanning
+                ? "正在刷新"
+                : "刷新行情"}
           </button>
         </div>
       </div>
@@ -264,43 +377,6 @@ export default function PublicMarket({
           {error}
         </div>
       )}
-      <div className="public-connections">
-        {state.connections.map((c) => (
-          <div className="panel" key={c.venue}>
-            <div>
-              <b>{c.venue}</b>
-              <span
-                className={`tag ${c.streamState === "LIVE" ? "green" : c.error ? "amber" : ""}`}
-              >
-                {c.streamState === "LIVE"
-                  ? "WebSocket 在线"
-                  : c.streamState === "CONNECTING"
-                    ? "连接中"
-                    : c.streamState === "RECOVERING"
-                      ? "恢复中"
-                      : c.state === "LIVE"
-                        ? "REST 已接通"
-                        : c.state === "CONNECTING"
-                          ? "请求中"
-                          : c.state === "DEGRADED"
-                            ? "部分不可用"
-                            : "未连接"}
-              </span>
-            </div>
-            <strong>
-              {c.instrumentCount} <small>个市场</small>
-            </strong>
-            <p>{c.error ?? `上次快照 ${time(c.lastSuccessAt)}`}</p>
-          </div>
-        ))}
-      </div>
-      <div className="public-evidence">
-        <ShieldCheck size={16} />
-        <span>
-          缺少账户时仍可计算市场收益与盘口容量；可执行容量、实际手续费及保证金保持“未知”。美元金额使用公开参考价，不假设稳定币恒等于
-          1 美元。
-        </span>
-      </div>
       <section className="panel">
         <div className="filter-bar">
           <div className="tabs">
@@ -308,7 +384,7 @@ export default function PublicMarket({
               className={view === "CANDIDATES" ? "selected" : ""}
               onClick={() => setView("CANDIDATES")}
             >
-              机会计算 · {state.candidates.length}
+              候选看板
             </button>
             <button
               className={view === "DATA" ? "selected" : ""}
@@ -323,10 +399,34 @@ export default function PublicMarket({
               历史结算
             </button>
           </div>
-          <span className="public-asof">计算快照 {time(state.computedAt)}</span>
+          <span className="public-asof">
+            最近计算{" "}
+            {state.computedAt
+              ? new Date(state.computedAt).toLocaleString("zh-CN")
+              : "尚未计算"}
+          </span>
         </div>
         {view === "CANDIDATES" && (
           <>
+            <div className="decision-groups" aria-label="候选状态分组">
+              {(
+                [
+                  ["WATCH", "值得观察"],
+                  ["REJECTED", "暂不满足"],
+                  ["ATTENTION", "数据待更新"],
+                ] as const
+              ).map(([key, label]) => (
+                <button
+                  key={key}
+                  className={group === key ? "selected" : ""}
+                  aria-pressed={group === key}
+                  onClick={() => setGroup(key)}
+                >
+                  <b>{counts[key]}</b>
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
             <div className="public-filter">
               <select
                 aria-label="公开策略筛选"
@@ -349,163 +449,336 @@ export default function PublicMarket({
                   placeholder="资产或交易所"
                 />
               </label>
+              <select
+                aria-label="候选排序"
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+              >
+                <option value="DURATION">持有期：短 → 长</option>
+                <option value="ANNUALIZED">资金占用年化对比</option>
+              </select>
             </div>
-            {sorted.length ? (
-              <div className="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>市场组合</th>
-                      <th>策略</th>
-                      <th>净收益 / 持有期</th>
-                      <th>参考规模预期净损益</th>
-                      <th>市场判断</th>
-                      <th />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sorted.map((c) => (
-                      <tr key={c.id}>
-                        <td>
-                          <b>{c.asset}</b>
-                          <small className="market-sub">
-                            {c.venues.join(" → ")}
-                          </small>
-                          <small className="market-sub">
-                            {c.instrumentIds
-                              .map(
-                                (id) =>
-                                  state.snapshots.find(
-                                    (s) => s.instrument.id === id,
-                                  )?.instrument.symbol ?? id,
-                              )
-                              .join(" / ")}
-                          </small>
-                        </td>
-                        <td>{names[c.strategy]}</td>
-                        <td
-                          className={
-                            c.netPct !== null && c.netPct > 0
-                              ? "positive"
-                              : "negative"
-                          }
-                        >
-                          {percent(c.netPct)}
-                          <small className="market-sub">
-                            {c.holdingSeconds >= 172800
-                              ? `${(c.holdingSeconds / 86400).toFixed(1)} 天`
-                              : `${(c.holdingSeconds / 3600).toFixed(1)} 小时`}
-                          </small>
-                        </td>
-                        <td>{money(c.expectedPnlUsd)}</td>
-                        <td>
+            {sort === "ANNUALIZED" && (
+              <p className="decision-footnote">
+                按两腿全额本金及入场费归一化，仅作算术对比。不假设收益可以持续重复；年化高不代表风险低，现货价差不参与年化排序。
+              </p>
+            )}
+            {displayed.length ? (
+              <>
+                <div
+                  className="decision-list"
+                  onPointerEnter={holdList}
+                  onPointerDown={holdList}
+                  onPointerLeave={() => {
+                    if (!detail) setHeldIds(null);
+                  }}
+                  onFocusCapture={holdList}
+                  onBlurCapture={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node))
+                      setHeldIds(null);
+                  }}
+                >
+                  {displayed.slice(0, limit).map((c) => {
+                    const e = c.economics.find(
+                        (e) => e.notionalUsd === c.referenceSizeUsd,
+                      ),
+                      capital = capitalEstimate(e),
+                      liveGroup = candidateGroup(c, now, available),
+                      needsData = liveGroup === "ATTENTION",
+                      status = needsData
+                        ? "数据待更新"
+                        : liveGroup === "WATCH"
+                          ? "值得观察"
+                          : "暂不满足";
+                    const stale =
+                      !available || now > c.freshUntil || c.status === "STALE";
+                    const mainReason = needsData
+                      ? stale
+                        ? "盘口已过期，等待更新"
+                        : reason(
+                            c.reasonCodes[0] ?? "MARKET_EVIDENCE_INCOMPLETE",
+                          )
+                      : reason(c.reasonCodes[0] ?? "ACCOUNT_NOT_CONNECTED");
+                    return (
+                      <article
+                        key={c.id}
+                        className={`decision-card ${needsData ? "muted-candidate" : ""}`}
+                      >
+                        <div className="decision-card-head">
+                          <div>
+                            <h3>
+                              {c.asset} · {names[c.strategy]}
+                            </h3>
+                            <p>
+                              {c.venues.join(" → ")}
+                              {c.strategy === "BASIS_CASH_CARRY"
+                                ? ` · ${c.instrumentIds
+                                    .map(
+                                      (id) =>
+                                        state.snapshots.find(
+                                          (s) => s.instrument.id === id,
+                                        )?.instrument,
+                                    )
+                                    .filter((i) => i?.expiresAt)
+                                    .map((i) =>
+                                      new Date(
+                                        i!.expiresAt!,
+                                      ).toLocaleDateString("zh-CN"),
+                                    )
+                                    .join("")} 到期`
+                                : ""}
+                            </p>
+                          </div>
                           <span
-                            className={`tag ${c.status === "WATCH" ? "green" : c.status === "REJECTED" ? "amber" : ""}`}
+                            className={`tag ${liveGroup === "WATCH" ? "green" : liveGroup === "REJECTED" ? "amber" : ""}`}
                           >
-                            {
-                              {
-                                WATCH: "值得观察",
-                                REJECTED: "未达门槛",
-                                STALE: "快照过期",
-                                INCOMPLETE: "数据不足",
-                              }[c.status]
-                            }
+                            {status}
                           </span>
-                          <small className="market-sub">
-                            {reason(
-                              c.reasonCodes[0] ?? "ACCOUNT_NOT_CONNECTED",
+                        </div>
+                        <div className="decision-card-metrics">
+                          <div>
+                            <span>
+                              {c.strategy === "CROSS_EXCHANGE_SPREAD"
+                                ? "两腿名义金额"
+                                : "模拟需备资金"}
+                            </span>
+                            <strong>
+                              {money(
+                                c.strategy === "CROSS_EXCHANGE_SPREAD"
+                                  ? (capital?.principal ?? null)
+                                  : (capital?.required ?? null),
+                              )}
+                            </strong>
+                            <small>
+                              {c.strategy === "CROSS_EXCHANGE_SPREAD"
+                                ? "另需预置现货库存，暂不支持模拟"
+                                : "两腿全额本金 + 入场费估计"}
+                            </small>
+                          </div>
+                          <div>
+                            <span>
+                              {needsData
+                                ? "上次模型预期净收益"
+                                : "模型预期净收益"}
+                            </span>
+                            <strong
+                              className={
+                                needsData
+                                  ? ""
+                                  : liveGroup === "WATCH" &&
+                                      c.expectedPnlUsd !== null &&
+                                      c.expectedPnlUsd > 0
+                                    ? "positive"
+                                    : ""
+                              }
+                            >
+                              {money(c.expectedPnlUsd)}
+                            </strong>
+                            <small>
+                              预计持有 {duration(c.holdingSeconds)} ·
+                              已扣模型成本及储备
+                            </small>
+                            {sort === "ANNUALIZED" && (
+                              <small>
+                                资金占用年化对比{" "}
+                                {percent(comparableAnnualized(c), 2)}
+                              </small>
                             )}
-                          </small>
-                        </td>
-                        <td>
+                          </div>
+                        </div>
+                        <p className="decision-reason">
+                          {needsData
+                            ? "数据限制"
+                            : liveGroup === "WATCH"
+                              ? "下一步"
+                              : "主要原因"}
+                          ：
+                          {liveGroup === "WATCH"
+                            ? "核对成本和资金，再决定是否研究模拟"
+                            : mainReason}
+                        </p>
+                        <div className="decision-card-footer">
+                          <span>
+                            单腿参考规模 {money(c.referenceSizeUsd)}
+                            {needsData ? " · 非当前有效报价" : ""}
+                          </span>
                           <button
-                            className="icon-button"
-                            aria-label={`查看公开 ${c.asset} ${names[c.strategy]} ${c.venues.join(" ")}`}
+                            className="outline compact"
                             disabled={busy}
                             onClick={() => showDetail(c)}
                           >
-                            <ArrowUpRight size={17} />
+                            {needsData
+                              ? "查看数据问题"
+                              : liveGroup === "REJECTED"
+                                ? "查看原因"
+                                : "查看资金与风险"}
+                            <ArrowRight size={14} />
                           </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+                {displayed.length > limit && (
+                  <button
+                    className="outline decision-more"
+                    onClick={() => setLimit((n) => n + 6)}
+                  >
+                    再显示 {Math.min(6, displayed.length - limit)} 个组合（共{" "}
+                    {sorted.length} 个）
+                  </button>
+                )}
+              </>
             ) : (
-              <div className="empty">
-                <Database size={26} />
+              <div className="empty decision-empty">
+                <ShieldCheck size={25} />
                 <h3>
-                  {state.lastScanAt ? "没有匹配的候选" : "先连接公开市场"}
+                  {state.candidates.length === 0
+                    ? "连接后开始评估"
+                    : group === "WATCH"
+                      ? "当前筛选下没有值得观察的候选"
+                      : group === "REJECTED"
+                        ? "当前筛选下没有未达门槛的候选"
+                        : "当前筛选下没有数据待更新的候选"}
                 </h3>
                 <p>
                   {strategy === "IDLE_CAPITAL_YIELD"
-                    ? "闲置收益需要经过批准的产品条款；不伪造公开收益率。"
-                    : "连接后获取合约规格、盘口、资金费和历史记录，并计算候选机会。"}
+                    ? "闲置生息尚缺已验证产品条款。"
+                    : group === "WATCH"
+                      ? "可以先不操作。未达门槛和数据问题已分开列出。"
+                      : "调整策略或搜索条件，查看其他组合。"}
                 </p>
+                <div className="decision-empty-actions">
+                  {group === "WATCH" && counts.REJECTED > 0 && (
+                    <button
+                      className="outline"
+                      onClick={() => {
+                        setGroup("REJECTED");
+                        setStrategy("ALL");
+                        setSearch("");
+                      }}
+                    >
+                      查看未达门槛原因
+                    </button>
+                  )}
+                  {group === "WATCH" && counts.ATTENTION > 0 && (
+                    <button
+                      className="text-button"
+                      onClick={() => {
+                        setGroup("ATTENTION");
+                        setStrategy("ALL");
+                        setSearch("");
+                      }}
+                    >
+                      查看数据问题
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </>
         )}
         {view === "DATA" && (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>市场</th>
-                  <th>买一 / 卖一</th>
-                  <th>当前资金费</th>
-                  <th>结算周期</th>
-                  <th>最近历史样本</th>
-                  <th>数据源</th>
-                </tr>
-              </thead>
-              <tbody>
-                {state.snapshots.map((s) => (
-                  <tr key={s.instrument.id}>
-                    <td>
-                      <b>{s.instrument.venue}</b>
-                      <small className="market-sub">
-                        {s.instrument.symbol} · {s.instrument.kind}
-                      </small>
-                    </td>
-                    <td>
-                      {s.book
-                        ? `${s.book.bids[0][0]} / ${s.book.asks[0][0]}`
-                        : "—"}
-                      <small className="market-sub">
-                        {s.instrument.quote} ·{" "}
-                        {s.book ? time(s.book.observedAt) : "盘口缺失"}
-                      </small>
-                    </td>
-                    <td>
-                      {s.funding ? percent(s.funding.rate * 100, 6) : "—"}
-                      <small className="market-sub">
-                        {s.funding
-                          ? `下次 ${time(s.funding.nextSettlementAt)}`
-                          : ""}
-                      </small>
-                    </td>
-                    <td>
-                      {s.funding
-                        ? `${s.funding.intervalMs / 3600000} 小时`
-                        : "—"}
-                    </td>
-                    <td>{s.funding?.history.length ?? "—"}</td>
-                    <td>
-                      <span className="tag">{s.book?.source ?? "不可用"}</span>
-                      <small className="market-sub">
-                        {s.errors[0] ??
-                          (s.book?.timestampQuality === "RECEIPT_ONLY"
-                            ? "仅接收时间"
-                            : "源时间戳")}
-                      </small>
-                    </td>
+          <>
+            <div className="decision-connections">
+              {state.connections.map((c) => (
+                <div key={c.venue}>
+                  <b>{c.venue}</b>
+                  <span className="tag">
+                    {!state.enabled
+                      ? "已暂停"
+                      : c.streamState === "LIVE"
+                        ? "行情流已连接"
+                        : c.streamState === "RECOVERING"
+                          ? "正在重连"
+                          : "等待行情"}
+                  </span>
+                  <small>
+                    {c.instrumentCount} 个市场 · 最近接收{" "}
+                    {c.lastMessageAt
+                      ? new Date(c.lastMessageAt).toLocaleString("zh-CN")
+                      : "尚无数据"}
+                  </small>
+                  {c.error && (
+                    <details>
+                      <summary>连接问题</summary>
+                      {c.error}
+                    </details>
+                  )}
+                </div>
+              ))}
+              <button
+                className="outline"
+                disabled={busy}
+                onClick={() => control(state.enabled ? "stop" : "start")}
+              >
+                {state.enabled ? "暂停行情连接" : "连接公开市场"}
+              </button>
+            </div>
+            <p className="decision-footnote">
+              连接成功不代表每个盘口仍有效；候选按各策略的时间要求单独检查。下表可包含上次取得的数据。
+            </p>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>市场</th>
+                    <th>买一 / 卖一</th>
+                    <th>当前资金费</th>
+                    <th>结算周期</th>
+                    <th>最近历史样本</th>
+                    <th>数据源</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {state.snapshots.map((s) => (
+                    <tr key={s.instrument.id}>
+                      <td>
+                        <b>{s.instrument.venue}</b>
+                        <small className="market-sub">
+                          {s.instrument.symbol} · {s.instrument.kind}
+                        </small>
+                      </td>
+                      <td>
+                        {s.book
+                          ? `${s.book.bids[0][0]} / ${s.book.asks[0][0]}`
+                          : "—"}
+                        <small className="market-sub">
+                          {s.instrument.quote} ·{" "}
+                          {s.book ? time(s.book.observedAt) : "盘口缺失"}
+                        </small>
+                      </td>
+                      <td>
+                        {s.funding ? percent(s.funding.rate * 100, 6) : "—"}
+                        <small className="market-sub">
+                          {s.funding
+                            ? `下次 ${time(s.funding.nextSettlementAt)}`
+                            : ""}
+                        </small>
+                      </td>
+                      <td>
+                        {s.funding
+                          ? `${s.funding.intervalMs / 3600000} 小时`
+                          : "—"}
+                      </td>
+                      <td>{s.funding?.history.length ?? "—"}</td>
+                      <td>
+                        <span className="tag">
+                          {s.book?.source ?? "不可用"}
+                        </span>
+                        <small className="market-sub">
+                          {s.errors[0] ??
+                            (s.book?.timestampQuality === "RECEIPT_ONLY"
+                              ? "仅接收时间"
+                              : "源时间戳")}
+                        </small>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
         {view === "HISTORY" && (
           <div className="history-form">
@@ -552,7 +825,7 @@ export default function PublicMarket({
                       ),
                     );
                   } catch (e) {
-                    setError((e as Error).message);
+                    setError(networkMessage(e));
                   } finally {
                     setBusy(false);
                   }
@@ -605,7 +878,10 @@ export default function PublicMarket({
         </div>
       </section>
       {state.errors.length > 0 && (
-        <div className="error-banner">{state.errors.join(" · ")}</div>
+        <details className="decision-footnote">
+          <summary>部分数据源有问题 · 查看技术详情</summary>
+          {state.errors.join(" · ")}
+        </details>
       )}
       <div className="public-valuation">
         {state.valuations.map((v) => (
@@ -629,65 +905,170 @@ export default function PublicMarket({
             </div>
             <span className="tag amber">DRAFT · 尚未验证</span>
           </div>
-          <div className="notice">
-            当前为只读研究候选。市场容量{" "}
-            {money(detail.candidate.marketCapacityUsd)}；账户可执行容量未知。
-          </div>
-          {onSimulate && (
-            <button
-              className="primary"
-              onClick={() => {
-                onSimulate(detail.candidate.id);
-                setDetail(null);
-              }}
-            >
-              使用真实行情模拟这笔交易
-            </button>
-          )}
-          <h3>仍缺少的执行证据</h3>
-          <ul className="public-blockers">
-            {detail.candidate.executionBlockers.map((r: string) => (
-              <li key={r}>{reason(r)}</li>
-            ))}
-          </ul>
-          <h3>按规模计算</h3>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>参考规模</th>
-                  <th>毛收益</th>
-                  <th>预期成本</th>
-                  <th>储备</th>
-                  <th>净收益</th>
-                  <th>门槛</th>
-                </tr>
-              </thead>
-              <tbody>
-                {detail.candidate.economics.map((e: any) => (
-                  <tr key={e.notionalUsd}>
-                    <td>
-                      {money(e.notionalUsd)}
-                      <small className="market-sub">
-                        取整后 {money(e.roundedNotionalUsd)}
-                      </small>
-                    </td>
-                    <td>{percent(e.grossPct)}</td>
-                    <td>{percent(e.expectedCostPct)}</td>
-                    <td>{percent(e.reservePct)}</td>
-                    <td>{percent(e.netPct)}</td>
-                    <td>
-                      {e.publicGatesPass
-                        ? "公开条件通过"
-                        : reason(e.reasonCodes[0])}
-                    </td>
-                  </tr>
+          <div className="decision-detail-controls">
+            <label>
+              单腿参考规模{" "}
+              <select
+                aria-label="模拟参考规模"
+                value={previewSize}
+                onChange={(e) => setPreviewSize(Number(e.target.value))}
+              >
+                {currentDetail?.economics.map((e) => (
+                  <option key={e.notionalUsd} value={e.notionalUsd}>
+                    {money(e.notionalUsd)}
+                  </option>
                 ))}
-              </tbody>
-            </table>
+              </select>
+            </label>
+            <span>预计持有 {duration(currentDetail!.holdingSeconds)}</span>
           </div>
-          <details open>
-            <summary>参考规模的交易腿</summary>
+          <div className="decision-card-metrics decision-detail-metrics">
+            <div>
+              <span>两腿全额本金 + 入场费估计</span>
+              <strong>{money(selectedCapital?.required ?? null)}</strong>
+              <small>公开费率估计；模拟不使用杠杆</small>
+            </div>
+            <div>
+              <span>
+                {candidateGroup(currentDetail!, now, available) === "ATTENTION"
+                  ? "上次模型预期净收益"
+                  : "模型预期净收益"}
+              </span>
+              <strong>{money(detailEconomics?.expectedPnlUsd ?? null)}</strong>
+              <small>该持有期内的模型结果，非保证收益</small>
+            </div>
+          </div>
+          <p className="detail-footnote">
+            预期交易成本{" "}
+            {money(
+              detailEconomics?.roundedNotionalUsd != null &&
+                detailEconomics.expectedCostPct != null
+                ? (detailEconomics.roundedNotionalUsd *
+                    detailEconomics.expectedCostPct) /
+                    100
+                : null,
+            )}{" "}
+            · 风险储备{" "}
+            {money(
+              detailEconomics?.roundedNotionalUsd != null
+                ? (detailEconomics.roundedNotionalUsd *
+                    detailEconomics.reservePct) /
+                    100
+                : null,
+            )}
+            （均已从净收益扣除，储备不是已付费用）。上方估计随行情更新。
+          </p>
+          <div className="decision-action-box">
+            <b>
+              {blocked
+                ? `暂不能模拟：${reason(blocked)}`
+                : shortfall
+                  ? "模拟资金不足：先设置各交易所的模拟余额"
+                  : !paperAccounts && onSimulate
+                    ? "尚未取得模拟余额，请重试读取"
+                    : detailEconomics?.publicGatesPass
+                      ? "公开条件通过，可继续检查研究模拟"
+                      : "未达收益门槛，仅适合研究模拟"}
+            </b>
+            {onSimulate &&
+              Object.entries(requirements).map(([venue, required]) => (
+                <p key={venue}>
+                  {venue} 需备 {money(required)} · 模拟可用{" "}
+                  {money(
+                    paperAccounts?.find((a) => a.venue === venue)?.cashUsd ??
+                      null,
+                  )}
+                </p>
+              ))}
+            <p>
+              仅记入个人模拟账本，不发送真实订单。提交时会重新检查盘口、数量和资金；实际收益仍取决于后续行情。
+            </p>
+            <div className="decision-empty-actions">
+              {onSimulate && (
+                <button
+                  className="primary"
+                  disabled={
+                    !!blocked || paperAccounts === null || shortfall || busy
+                  }
+                  onClick={() => {
+                    onSimulate(detail.candidate.id, previewSize);
+                    setDetail(null);
+                  }}
+                >
+                  继续研究模拟
+                </button>
+              )}
+              {shortfall && onManageFunds && (
+                <button
+                  className="outline"
+                  onClick={() => {
+                    setDetail(null);
+                    onManageFunds();
+                  }}
+                >
+                  设置模拟资金
+                </button>
+              )}
+              <button
+                className="outline"
+                disabled={busy}
+                onClick={() => showDetail(currentDetail!, previewSize)}
+              >
+                重新读取详情与余额
+              </button>
+            </div>
+          </div>
+          <details>
+            <summary>真实执行仍缺少什么</summary>
+            <ul className="public-blockers">
+              {detail.candidate.executionBlockers.map((r: string) => (
+                <li key={r}>{reason(r)}</li>
+              ))}
+            </ul>
+          </details>
+          <details>
+            <summary>
+              打开详情时的各规模计算快照 · {time(detail.candidate.computedAt)}
+            </summary>
+            <h3>按规模计算</h3>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>参考规模</th>
+                    <th>毛收益</th>
+                    <th>预期成本</th>
+                    <th>储备</th>
+                    <th>净收益</th>
+                    <th>门槛</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detail.candidate.economics.map((e: any) => (
+                    <tr key={e.notionalUsd}>
+                      <td>
+                        {money(e.notionalUsd)}
+                        <small className="market-sub">
+                          取整后 {money(e.roundedNotionalUsd)}
+                        </small>
+                      </td>
+                      <td>{percent(e.grossPct)}</td>
+                      <td>{percent(e.expectedCostPct)}</td>
+                      <td>{percent(e.reservePct)}</td>
+                      <td>{percent(e.netPct)}</td>
+                      <td>
+                        {e.publicGatesPass
+                          ? "公开条件通过"
+                          : reason(e.reasonCodes[0])}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+          <details>
+            <summary>打开详情时的参考交易腿</summary>
             <div className="table-wrap">
               <table>
                 <thead>
