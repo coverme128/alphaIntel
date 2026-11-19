@@ -1,6 +1,31 @@
 node_modules/
 dist/
 .data/
+
+# Local configuration and credentials; only explicit sanitized templates belong in Git.
 .env
+.env.*
+*.env
+*.env.*
+.envrc
+!.env.example
+!.env.*.example
+!*.env.example
+!*.env.sample
+!*.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+.aws/
+.ssh/
+
+# Local results, exports and backup folders may contain personal ledgers.
+exports/
+backups/
+*.log
+.DS_Store
 playwright-report/
 test-results/

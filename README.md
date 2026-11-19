@@ -1,85 +1,142 @@
-# Alpha Opportunity & Capital OS
+# AlphaIntel · Alpha Opportunity & Capital OS
 
-按 `alpha-opportunity-capital-os-commercial-v1.0.7.zip` 实施的本地产品开发版。当前交付是 **公开市场研究 + PAPER 工作台**，不是通过商业实盘验收的 V1。原始规格完整保留在 `specs/`，未修改包内业务规则或擅自提升策略成熟度。
+**本地运行的加密资产机会研究与个人资金工作台。** 使用交易所公开行情比较资金费、期现基差和跨所价差，提供可追溯计算、真实行情模拟与手动记账，无需交易所 API Key。
 
-## 启动
+A local-first crypto market research dashboard with public exchange data, auditable calculations, paper trading and a personal ledger. No exchange API keys required.
 
-需要 Node.js 20.19+、npm。
+[快速开始](#快速开始) · [界面预览](#界面预览) · [个人使用说明](docs/PERSONAL-USE.md) · [API 文档](docs/PUBLIC-MARKET-API.md) · [参与贡献](CONTRIBUTING.md) · [MIT License](LICENSE)
+
+> 当前是个人研究与模拟版本，不是自动交易机器人。不会发送真实订单；模型预期收益不等于已实现利润或经过验证的投资收益。策略保持 `DRAFT / UNPROVEN`。
+
+## 能做什么
+
+| 功能 | 当前能力 |
+| --- | --- |
+| 公开行情 | OKX、Binance、Bybit、Hyperliquid；REST 元数据与历史资金费、WebSocket 盘口；默认 BTC / ETH |
+| 机会研究 | 资金费率中性、期现基差、跨所资金费率、跨所现货价差；区分值得观察、未达门槛和数据待更新 |
+| 透明计算 | 双腿数量匹配、合约乘数、VWAP、滑点、费用估计、风险储备、资金占用、持有期与按规模计算 |
+| 研究模拟 | 三类带衍生品的组合按真实盘口模拟，两腿全额预留本金；行情、数量或资金检查失败则整笔拒绝 |
+| 个人账本 | 模拟与手动记账分离；资金流水、成交、手续费、资金费、持仓提示和分项绩效 |
+| 可追溯导出 | 导出计算输入、参数版本、公式事实和账本结果，支持确定性复算 |
+
+跨所现货价差可研究，但需要预置现货库存，当前不支持这类模拟。闲置生息仅提供条款计算接口，尚未连接私人产品条款。连接正常也不保证每个候选的数据仍在有效期内。
+
+## 界面预览
+
+以下截图于 **2026-11-19（Asia/Shanghai）** 从隔离的本地实例采集：使用当时的公开行情，模拟余额为零。截图不是当前报价或收益承诺；“没有值得观察的候选”和负收益结果均为正常状态。
+
+**机会总览：先看当前结论与数据状态。**
+
+![机会总览：观察条件、未达门槛及待更新数据分组](docs/screenshots/opportunities.jpg)
+
+**计算详情：比较两腿资金、持有期、费用和限制，再决定是否模拟。**
+
+![候选计算详情：公开费用估计、模型净收益和模拟余额预检](docs/screenshots/candidate-detail.jpg)
+
+<details>
+<summary>展开查看候选卡片列表</summary>
+
+![跨所资金费候选：资金占用、持有周期及未达门槛原因](docs/screenshots/candidates.jpg)
+
+</details>
+
+截图来源与重拍说明见 [截图说明](docs/screenshots/README.md)。
+
+## 快速开始
+
+需要 **Node.js 20.19+** 和 npm，且本机网络可以访问上述交易所及 Coinbase 的公开接口。当前提供中文界面；终端示例适用于 macOS / Linux / WSL。
 
 ```sh
+git clone https://github.com/coverme128/alphaIntel.git
+cd alphaIntel
 npm ci
-npm run dev
-```
-
-打开 <http://127.0.0.1:4317>。服务仅绑定本机。“机会”可连接四家交易所，无需 API Key。默认关注 BTC、ETH。
-
-个人工作台初始没有资金或持仓；需手动录入。旧版示例演练保留初始模拟资金 **100,000 USD** 和 Golden Fixtures，与个人账本隔离。
-
-```sh
-npm run check       # 自动测试 + TypeScript + 前端构建
 npm run build
-npm start           # 使用已构建的界面，本机预览
+ALPHA_PUBLIC_AUTOSTART=true npm start
 ```
 
-`PORT` 可设置端口，`ALPHA_DATA_DIR` 可设置本地数据目录。不要同时启动多个实例使用同一数据文件。`npm start` 只是构建产物运行方式，不表示具备生产或实盘资格。
+打开 **http://127.0.0.1:4317/#Opportunities**。启动后等待行情与历史数据加载，检查“最近计算”和数据状态；数据缺失或过期时不会用示例机会替代。
 
-## 可操作的功能
-
-- **今日**：个人净值、可用资金与最多三条持仓关注事项。
-- **机会**：按观察条件和数据状态分组，显示两腿资金、持有周期和模型净收益；详情预检模拟条件并保留计算追溯。
-- **持仓**：模拟建仓/平仓、手动成交/资金费录入、持仓估值及退出阈值提示。
-- **资金组合**：交易所资金流水、分市场费率配置；两种账本完全隔离。
-- **绩效**：价差损益、资金费、费用、未实现损益、净值采样与流水；经济状态仍为 `UNPROVEN`。
-- **示例环境设置**：保留旧版固定示例和旧版模拟控制，仅作用于示例演练。
-- **决策与分析导出**：唯一 v1.0.7 JSON，个人模式导出个人账本与公开市场事实，AJV 校验，无凭据。
-
-个人模拟使用当前盘口估算成交与退出，资金费按已结算费率及相邻采集价格估算；个人手动账本使用本人录入的成交与费用。预期收益不会记成已实现利润。旧版固定示例的“成本分半”逻辑仅保留在旧版演练中，不用于新的个人账本。
-
-
-## 个人使用工作台
-
-默认进入独立个人账本，支持真实行情模拟和个人手动记账，初始资金为零。先到“资金组合”添加资金，再从“机会”研究模拟，或在“持仓”录入已经发生的成交。今日和持仓展示阈值提醒，绩效展示分项损益与流水。旧版固定示例通过页头“查看旧版示例演练”访问。
-
-详细使用流程、模拟成交和资金费估算口径、API 及限制见 [个人使用说明](docs/PERSONAL-USE.md)。本批不包含运行保障基础设施和真实下单。
-
-## 无账户的公开市场
-
-在“机会”点击“连接公开市场”。支持 OKX、Binance、Bybit 的 USDT 现货、线性永续和可用交割合约，以及 Hyperliquid 永续；当前默认 BTC / ETH。盘口经 WebSocket 更新，费率和参考估值按 60 秒周期刷新。
-
-自动计算资金费中性、期现基差、跨所资金费和跨所价差，包含实际结算时刻、历史分位数、合约乘数、双腿数量匹配、VWAP、费用估计、风险储备和各规模容量。两腿取整后的实际参考金额决定预期收益金额。数据过期、历史不足、深度不足均显示原因。闲置生息提供条款计算 API，不伪造私有产品利率。
+开发模式支持前端热更新：
 
 ```sh
-ALPHA_PUBLIC_AUTOSTART=true ALPHA_ASSETS=BTC,ETH npm start
+ALPHA_PUBLIC_AUTOSTART=true npm run dev
+```
+
+不设置自动连接时，可在“机会”点击“连接公开市场”。以后使用已构建版本只需运行 `ALPHA_PUBLIC_AUTOSTART=true npm start`，保持终端运行；按 `Ctrl+C` 结束服务。更新代码后重新安装依赖并构建。
+
+## 第一次使用
+
+1. **只看行情与机会**：无需注册账户、填写密钥或录入资金。
+2. **研究模拟**：在“资金组合 → 真实行情模拟”录入各交易所的模拟资金；到“机会”选择规模、核对资金和限制后继续模拟。这里只记模拟账，不充值或转账。
+3. **手动记账**：选择“个人手动记账”，录入自己已发生的成交、实际手续费和资金流水。
+4. **复盘**：在“持仓”看估值与提醒，在“绩效”区分已实现价差、资金费、费用和未实现损益。
+
+个人账本初始资金为零。旧版示例演练的 **100,000 USD** 为固定演示数据，与个人账本隔离。详见 [个人使用说明](docs/PERSONAL-USE.md)。
+
+## 配置与数据
+
+无需密钥，也无需数据库或大模型服务。配置由**启动进程的环境变量**提供；应用**不会自动读取 `.env`**。[`.env.example`](.env.example) 仅列出非敏感配置示例。
+
+| 环境变量 | 默认值 | 用途 |
+| --- | --- | --- |
+| `PORT` | `4317` | 本机 HTTP 端口 |
+| `ALPHA_PUBLIC_AUTOSTART` | 不自动连接 | 设为 `true` 后启动公开行情采集 |
+| `ALPHA_ASSETS` | `BTC,ETH` | 逗号分隔的资产符号；其他资产取决于适配器及市场可用性 |
+| `ALPHA_DATA_DIR` | `.data` | 本地账本及公开行情状态的保存目录 |
+
+```sh
+ALPHA_PUBLIC_AUTOSTART=true ALPHA_ASSETS=BTC,ETH PORT=4317 npm start
+```
+
+- 市场参数和保守费用假设位于 [`config/public-market.json`](config/public-market.json)，修改后重启。公开费用估计不代表个人账户的实际费率。
+- 账本及缓存保存在 `.data/`，已忽略 Git 跟踪。不要多个实例同时写同一数据目录；删除目录会丢失本地记录。
+- 服务仅监听 `127.0.0.1`，面向单人本机使用，没有面向公网部署的账户认证与隔离设计。
+- `specs/` 保存原始 v1.0.7 规格，包含未来生产架构和配置示例，**不代表当前版本已实现，也不是当前运行时配置**。
+- 导出 JSON 可能包含个人资金、持仓与成交记录；分享前自行脱敏。不要把 `.data/`、实际 `.env` 或导出账本提交到仓库。
+
+## 开发与验证
+
+技术栈：**React 19 · TypeScript · Vite 6 · Express 4**。当前使用本地 JSON 原子写入保存账本，没有部署数据库的前置要求。
+
+```sh
+npm run check              # 单元 / 接口测试 + TypeScript 检查 + 前端构建
+npm run security:check     # 当前文件及暂存内容的脱敏规则扫描
+npm run security:history   # 另扫描本地全部引用及 reflog 可达的历史文件
 npm run market:check -- /tmp/alpha-public-market-snapshot.json
-```
-
-环境变量由启动 shell 提供，应用不自动加载 `.env`。市场参数和版本化费用假设在 `config/public-market.json`；修改后重启。没有账户时不需要任何密钥。费用假设不代表账户真实费率，公开估值不代表经过审批的 NAV。
-
-接口、配置和计算口径见 [公开市场 API](docs/PUBLIC-MARKET-API.md)。唯一分析导出包含公开候选、精确计算输入、参数版本、事实与追溯，可确定性复算。所有公开候选保持 `DRAFT / UNPROVEN`，不具有下单权限。
-
-## 目录
-
-```text
-src/domain/       确定性公式、分配约束、轮动规则与回放库
-src/server/       本地 API、账本、审计、事实投影
-src/market/       四交易所 REST / WebSocket、元数据、历史、真实行情计算
-src/client/       中文 React 工作台、响应式布局
-scripts/          离线回放、公开市场联网检查
-specs/            原始 v1.0.7 产品包（含 SQL 和配置）
-tests/            Golden Fixtures、服务端约束、持久化与 HTTP 集成测试
-docs/             实施状态、架构决定、公开 API 来源
-```
-
-## 回放
-
-```sh
 npm run replay -- docs/replay-example.json /tmp/alpha-replay-report.json
 ```
 
-输入必须按时间升序，显式提供数据来源、时间切分点和源快照 ID；输出包含 calibration/holdout、每帧结果和稳定报告哈希。此命令用于重算**已归一化经济输入**，尚不包含订单簿撮合、实际资金费结算或 30 天真实历史验收。回放报告是开发工具产物，不是新增用户分析导出格式。输出文件已存在时拒绝覆盖。
+`market:check` 需要联网；`replay` 使用已归一化输入复算，不等于完整订单簿撮合或长周期收益验证。扫描器是启发式防误提交检查，不保证发现所有类型的凭据；范围和限制见 [安全说明](SECURITY.md)。
 
-## 交付边界
+```text
+src/client/      中文界面、个人工作台与机会看板
+src/market/      公开数据适配器、WebSocket、历史数据与策略计算
+src/domain/      确定性公式、分配约束、轮动规则与回放
+src/personal/    模拟及手动账本、估值与结算
+src/server/      本地 API、持久化与导出
+config/          版本化策略与费用假设
+scripts/         联网检查、回放与敏感信息扫描
+tests/           Golden Fixtures、计算与 HTTP 接口测试
+docs/            使用、API、架构、验收状态与截图
+specs/           原始规格与未来生产交付参考
+```
 
-详见 [实施与验收状态](docs/IMPLEMENTATION-STATUS.md)。当前不收集交易所密钥，不发送真实订单，不允许 ASSISTED/AUTO，不包含转账、自动退出监控或后台通知。
+## 当前边界
 
-进入实盘还需要实现并验证：生产级行情一致性及长期恢复验收、PostgreSQL 事务账本、私有账户/加密凭据、双腿执行状态机和失败恢复、自动风控/退出与对账，并完成规定的历史回放、连续模拟和交易所测试。功能代码通过测试不等于这些时间和证据门槛已经通过。
+尚未实现私有账户同步、真实下单、真实成交对账、保证金与强平计算、私有理财条款接入。持仓提醒仅显示在页面，不会自动退出或发送后台通知；长时间离线期间的数据不能视为完整。
+
+实盘还需要交易执行状态机、失败恢复、账户及凭据管理、自动风控、生产账本和长期运行验证。测试通过只说明已覆盖的行为符合预期，不等于策略盈利、安全或可实盘。完整状态见 [实施与验收说明](docs/IMPLEMENTATION-STATUS.md)。
+
+## 文档与贡献
+
+- [个人使用说明](docs/PERSONAL-USE.md)
+- [公开市场 API 与配置](docs/PUBLIC-MARKET-API.md)
+- [公开接口来源](docs/ADAPTER-SOURCES.md)
+- [架构决策](docs/ADR-001-DETERMINISTIC-CORE.md)
+- [参与贡献](CONTRIBUTING.md) · [安全说明](SECURITY.md)
+
+欢迎提交可复现的问题和 Pull Request。Issue、截图、日志及测试数据中请勿包含密钥、真实账户标识或个人账本。
+
+## 许可证
+
+[MIT](LICENSE) © 2026 coverme128。第三方依赖保留各自的许可证；交易所接口和市场数据的使用仍受相应服务条款约束。
